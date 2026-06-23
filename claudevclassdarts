@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClassTrack — Behaviour Management</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #243258;
+    --navy-light: #2e3f6e;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --cream: #f7f5f0;
+    --white: #ffffff;
+    --green: #2d7d4f;
+    --green-light: #e8f5ee;
+    --red: #b83232;
+    --red-light: #fbeaea;
+    --slate: #64748b;
+    --border: #e2e0da;
+    --shadow: 0 1px 3px rgba(26,39,68,0.08), 0 4px 16px rgba(26,39,68,0.06);
+    --shadow-lg: 0 8px 32px rgba(26,39,68,0.14);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .logo-text { font-family: 'DM Serif Display', serif; font-size: 20px; letter-spacing: 0.02em; }
+  .logo-sub { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; text-transform: uppercase; margin-top: -2px; }
+  .header-right { display: flex; gap: 8px; }
+
+  /* ── NAV TABS ── */
+  .nav-tabs {
+    background: var(--navy-mid);
+    display: flex;
+    padding: 0 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-tab {
+    padding: 12px 18px;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .nav-tab:hover { color: rgba(255,255,255,0.85); }
+  .nav-tab.active { color: var(--gold-light); border-bottom-color: var(--gold); }
+
+  /* ── LAYOUT ── */
+  .main { display: flex; min-height: calc(100vh - 96px); }
+  .sidebar {
+    width: 280px; min-width: 280px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    overflow-y: auto;
+  }
+  .content { flex: 1; padding: 28px 32px; overflow-y: auto; }
+
+  /* ── SIDEBAR ── */
+  .sidebar-section { margin-bottom: 8px; }
+  .sidebar-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--slate); padding: 0 20px 6px;
+  }
+  .student-item {
+    display: flex; align-items: center;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: background 0.12s;
+    gap: 10px;
+    border-left: 3px solid transparent;
+  }
+  .student-item:hover { background: var(--cream); }
+  .student-item.active { background: #eef1f8; border-left-color: var(--navy); }
+  .student-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--navy-light);
+    color: white; font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .student-info { flex: 1; min-width: 0; }
+  .student-name { font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .student-meta { font-size: 11px; color: var(--slate); }
+  .student-score {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .score-pos { background: var(--green-light); color: var(--green); }
+  .score-neg { background: var(--red-light); color: var(--red); }
+  .score-neu { background: #f0f0f0; color: var(--slate); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 6px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-gold { background: var(--gold); color: var(--navy); font-weight: 600; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: #256040; }
+  .btn-red { background: var(--red); color: white; }
+  .btn-red:hover { background: #9e2828; }
+  .btn-ghost { background: transparent; color: var(--navy); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--cream); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-xs { padding: 3px 8px; font-size: 11px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title { font-weight: 600; font-size: 15px; }
+  .card-subtitle { font-size: 12px; color: var(--slate); margin-top: 2px; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .page-title { font-family: 'DM Serif Display', serif; font-size: 26px; }
+  .page-sub { font-size: 13px; color: var(--slate); margin-top: 3px; }
+
+  /* ── STATS ROW ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--slate); }
+  .stat-value { font-size: 28px; font-weight: 700; margin: 4px 0 2px; font-family: 'DM Serif Display', serif; }
+  .stat-hint { font-size: 11px; color: var(--slate); }
+  .stat-green .stat-value { color: var(--green); }
+  .stat-red .stat-value { color: var(--red); }
+  .stat-navy .stat-value { color: var(--navy); }
+  .stat-gold .stat-value { color: var(--gold); }
+
+  /* ── BEHAVIOUR RECORD BUTTON GRID ── */
+  .behaviour-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .beh-btn {
+    padding: 12px 14px; border-radius: 8px; border: none;
+    cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.15s; text-align: left;
+  }
+  .beh-btn-pos { background: var(--green-light); color: var(--green); border: 1px solid #b2dcbf; }
+  .beh-btn-pos:hover { background: #d2eddc; }
+  .beh-btn-neg { background: var(--red-light); color: var(--red); border: 1px solid #e8b8b8; }
+  .beh-btn-neg:hover { background: #f5d4d4; }
+  .beh-icon { font-size: 18px; }
+
+  /* ── LOG ENTRIES ── */
+  .log-entry {
+    display: flex; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    margin-top: 5px; flex-shrink: 0;
+  }
+  .log-dot-pos { background: var(--green); }
+  .log-dot-neg { background: var(--red); }
+  .log-content { flex: 1; }
+  .log-behaviour { font-weight: 500; font-size: 13px; }
+  .log-meta { font-size: 11px; color: var(--slate); margin-top: 2px; }
+  .log-class-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px;
+    background: #eef1f8; color: var(--navy);
+    border: 1px solid #d0d7e8;
+  }
+  .log-note { font-size: 12px; color: #4a5568; margin-top: 4px; font-style: italic; }
+  .log-delete {
+    background: none; border: none; color: #ccc; cursor: pointer;
+    font-size: 14px; padding: 2px 4px; border-radius: 4px;
+    transition: color 0.12s;
+  }
+  .log-delete:hover { color: var(--red); }
+
+  /* ── CLASSES SECTION ── */
+  .class-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 5px;
+    background: #eef1f8; color: var(--navy);
+    font-size: 12px; font-weight: 500;
+    border: 1px solid #d0d7e8;
+    margin: 3px;
+  }
+  .class-tag-del { background: none; border: none; cursor: pointer; color: #aaa; font-size: 12px; padding: 0; }
+  .class-tag-del:hover { color: var(--red); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,18,40,0.55);
+    z-index: 200; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 28px;
+    width: 440px; max-width: 95vw;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(10px); transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 18px; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+  /* ── FORM ELEMENTS ── */
+  label { font-size: 12px; font-weight: 600; color: var(--slate); display: block; margin-bottom: 5px; letter-spacing: 0.03em; text-transform: uppercase; }
+  input[type="text"], input[type="date"], textarea, select {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-family: inherit; font-size: 13px; color: var(--navy);
+    background: var(--white); transition: border-color 0.15s;
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.08); }
+  .form-row { margin-bottom: 14px; }
+  .checkbox-group { display: flex; flex-direction: column; gap: 6px; max-height: 160px; overflow-y: auto; }
+  .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+  .checkbox-item input { width: auto; }
+
+  /* ── REPORT ── */
+  .report-section { margin-bottom: 24px; }
+  .report-section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--slate);
+    margin-bottom: 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .report-student-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid #f0ede8;
+  }
+  .report-student-row:last-child { border-bottom: none; }
+  .report-bar { flex: 1; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+  .report-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .fill-green { background: var(--green); }
+  .fill-red { background: var(--red); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 48px 20px; color: var(--slate);
+  }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-title { font-weight: 600; font-size: 15px; margin-bottom: 6px; color: var(--navy); }
+  .empty-sub { font-size: 13px; }
+
+  /* ── PRINT REPORT ── */
+  @media print {
+    header, .nav-tabs, .sidebar, .no-print { display: none !important; }
+    .main { display: block; }
+    .content { padding: 0; }
+    body { background: white; }
+  }
+
+  .hidden { display: none !important; }
+  .flex { display: flex; }
+  .gap-2 { gap: 8px; }
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d0ccc4; border-radius: 3px; }
+
+  /* ── ADD STUDENT BTN in sidebar ── */
+  .sidebar-add-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 20px; cursor: pointer;
+    color: var(--slate); font-size: 13px; font-weight: 500;
+    transition: background 0.12s; width: 100%; background: none; border: none;
+    font-family: inherit;
+  }
+  .sidebar-add-btn:hover { background: var(--cream); color: var(--navy); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .behaviour-type-toggle {
+    display: flex; gap: 6px; margin-bottom: 12px;
+  }
+  .type-toggle-btn {
+    flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--border);
+    cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;
+    background: var(--cream); color: var(--slate); transition: all 0.15s;
+  }
+  .type-toggle-btn.active-pos { background: var(--green); color: white; border-color: var(--green); }
+  .type-toggle-btn.active-neg { background: var(--red); color: white; border-color: var(--red); }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  .period-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .period-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    background: white; color: var(--slate); transition: all 0.15s; font-family: inherit;
+  }
+  .period-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+  #customDateRange { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+  #customDateRange input { flex: 1; }
+  #customDateRange span { font-size: 12px; color: var(--slate); }
+
+  .filter-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-row select { width: auto; min-width: 140px; }
+
+  /* Colour coded avatars */
+  .av-0 { background: #1a2744; }
+  .av-1 { background: #2d7d4f; }
+  .av-2 { background: #7c3aed; }
+  .av-3 { background: #b45309; }
+  .av-4 { background: #0369a1; }
+  .av-5 { background: #be185d; }
+  .av-6 { background: #065f46; }
+  .av-7 { background: #9f1239; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📋</div>
+    <div>
+      <div class="logo-text">ClassTrack</div>
+      <div class="logo-sub">Behaviour Management</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-gold btn-sm" onclick="openModal('reportModal')">📊 Print Report</button>
+    <button class="btn btn-ghost btn-sm" style="color:white;border-color:rgba(255,255,255,0.2)" onclick="openModal('addStudentModal')">＋ Add Student</button>
+  </div>
+</header>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</div>
+  <div class="nav-tab" onclick="switchTab('students')">Students</div>
+  <div class="nav-tab" onclick="switchTab('log')">Full Log</div>
+  <div class="nav-tab" onclick="switchTab('report')">Reports</div>
+</div>
+
+<div class="main">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Students</div>
+      <div id="studentList"></div>
+      <button class="sidebar-add-btn" onclick="openModal('addStudentModal')">＋ Add Student</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div id="dashboardContent"></div>
+    </div>
+
+    <!-- STUDENTS TAB -->
+    <div id="tab-students" class="tab-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">All Students</div>
+          <div class="page-sub">Manage students and their class enrolments</div>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('addStudentModal')">＋ Add Student</button>
+      </div>
+      <div id="allStudentsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;"></div>
+    </div>
+
+    <!-- LOG TAB -->
+    <div id="tab-log" class="tab-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Behaviour Log</div>
+          <div class="page-sub">All recorded incidents across all students</div>
+        </div>
+      </div>
+      <div class="filter-row">
+        <select id="logFilterStudent" onchange="renderLog()">
+          <option value="">All Students</option>
+        </select>
+        <select id="logFilterClass" onchange="renderLog()">
+          <option value="">All Classes</option>
+        </select>
+        <select id="logFilterType" onchange="renderLog()">
+          <option value="">All Types</option>
+          <option value="positive">Positive only</option>
+          <option value="negative">Negative only</option>
+        </select>
+      </div>
+      <div class="card">
+        <div id="fullLogList"></div>
+      </div>
+    </div>
+
+    <!-- REPORT TAB -->
+    <div id="tab-report" class="tab-content">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Reports</div>
+          <div class="page-sub">Generate and print behaviour summaries</div>
+        </div>
+        <button class="btn btn-gold" onclick="openModal('reportModal')">🖨 Print / Export</button>
+      </div>
+      <div class="period-selector">
+        <button class="period-btn active" onclick="setReportPeriod('today',this)">Today</button>
+        <button class="period-btn" onclick="setReportPeriod('week',this)">This Week</button>
+        <button class="period-btn" onclick="setReportPeriod('month',this)">This Month</button>
+        <button class="period-btn" onclick="setReportPeriod('custom',this)">Custom</button>
+      </div>
+      <div id="customDateRange" class="hidden">
+        <input type="date" id="reportFrom">
+        <span>to</span>
+        <input type="date" id="reportTo">
+        <button class="btn btn-primary btn-sm" onclick="renderReportTab()">Apply</button>
+      </div>
+      <div id="reportContent"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ MODALS ══════════════ -->
+
+<!-- ADD STUDENT -->
+<div class="modal-overlay" id="addStudentModal">
+  <div class="modal">
+    <div class="modal-title">Add New Student</div>
+    <div class="form-row">
+      <label>Full Name</label>
+      <input type="text" id="newStudentName" placeholder="e.g. Emma Thompson">
+    </div>
+    <div class="form-row">
+      <label>Classes (comma-separated)</label>
+      <input type="text" id="newStudentClasses" placeholder="e.g. English, Maths, Science">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addStudentModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECORD BEHAVIOUR -->
+<div class="modal-overlay" id="behaviourModal">
+  <div class="modal">
+    <div class="modal-title" id="behaviourModalTitle">Record Behaviour</div>
+    <div class="behaviour-type-toggle">
+      <button class="type-toggle-btn active-pos" id="typeTogglePos" onclick="setBehaviourType('positive')">✅ Positive</button>
+      <button class="type-toggle-btn" id="typeToggleNeg" onclick="setBehaviourType('negative')">⚠️ Negative</button>
+    </div>
+    <div id="behaviourPresets" class="behaviour-grid"></div>
+    <div class="form-row">
+      <label>Or type custom behaviour</label>
+      <input type="text" id="customBehaviour" placeholder="Describe the behaviour…">
+    </div>
+    <div class="form-row">
+      <label>Class</label>
+      <select id="behaviourClass"></select>
+    </div>
+    <div class="form-row">
+      <label>Note (optional)</label>
+      <textarea id="behaviourNote" rows="2" placeholder="Any extra context…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('behaviourModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveBehaviourBtn" onclick="saveBehaviour()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CLASS TO STUDENT -->
+<div class="modal-overlay" id="addClassModal">
+  <div class="modal">
+    <div class="modal-title">Add Class</div>
+    <div class="form-row">
+      <label>Class Name</label>
+      <input type="text" id="newClassName" placeholder="e.g. History">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addClassModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addClassToStudent()">Add Class</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT REPORT MODAL -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal" style="width:500px">
+    <div class="modal-title">Generate Report</div>
+    <div class="form-row">
+      <label>Report Period</label>
+      <select id="printPeriod" onchange="togglePrintCustom()">
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="custom">Custom Date Range</option>
+      </select>
+    </div>
+    <div id="printCustomDates" class="hidden">
+      <div class="form-row">
+        <label>From</label>
+        <input type="date" id="printFrom">
+      </div>
+      <div class="form-row">
+        <label>To</label>
+        <input type="date" id="printTo">
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Students</label>
+      <div class="checkbox-group" id="printStudentCheckboxes"></div>
+    </div>
+    <div class="form-row">
+      <label>Include</label>
+      <div class="checkbox-group">
+        <label class="checkbox-item"><input type="checkbox" id="inclPositive" checked> Positive behaviours</label>
+        <label class="checkbox-item"><input type="checkbox" id="inclNegative" checked> Negative behaviours</label>
+        <label class="checkbox-item"><input type="checkbox" id="inclSummary" checked> Summary statistics</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('reportModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="printReport()">🖨 Print Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT FRAME (hidden) -->
+<div id="printFrame" class="hidden"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA LAYER  (localStorage persisted)
+// ═══════════════════════════════════════════
+const STORAGE_KEY = 'classtrack_v1';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { students: [], records: [] };
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+}
+
+let db = loadData();
+let selectedStudentId = null;
+let currentBehaviourType = 'positive';
+let currentAddClassStudentId = null;
+
+// ── preset behaviours ──
+const PRESETS = {
+  positive: [
+    { label: 'Excellent work', icon: '⭐' },
+    { label: 'Helping others', icon: '🤝' },
+    { label: 'Participation', icon: '🙋' },
+    { label: 'On task', icon: '✅' },
+    { label: 'Kind & respectful', icon: '💛' },
+    { label: 'Great effort', icon: '💪' },
+  ],
+  negative: [
+    { label: 'Disrupting class', icon: '🔊' },
+    { label: 'Off task', icon: '📵' },
+    { label: 'Talking over others', icon: '🗣️' },
+    { label: 'Late to class', icon: '⏰' },
+    { label: 'Missing homework', icon: '📋' },
+    { label: 'Unkind behaviour', icon: '⚠️' },
+  ]
+};
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const tabs = ['dashboard','students','log','report'];
+  document.querySelectorAll('.nav-tab')[tabs.indexOf(tab)].classList.add('active');
+  if (tab === 'students') renderAllStudents();
+  if (tab === 'log') { populateLogFilters(); renderLog(); }
+  if (tab === 'report') renderReportTab();
+}
+
+// ═══════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════
+function openModal(id) {
+  if (id === 'reportModal') populatePrintStudents();
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+// Click outside to close
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ═══════════════════════════════════════════
+// STUDENTS
+// ═══════════════════════════════════════════
+function addStudent() {
+  const name = document.getElementById('newStudentName').value.trim();
+  const classesRaw = document.getElementById('newStudentClasses').value.trim();
+  if (!name) return alert('Please enter a student name.');
+  const classes = classesRaw ? classesRaw.split(',').map(c => c.trim()).filter(Boolean) : [];
+  const student = {
+    id: Date.now().toString(),
+    name,
+    classes,
+    createdAt: new Date().toISOString()
+  };
+  db.students.push(student);
+  saveData();
+  document.getElementById('newStudentName').value = '';
+  document.getElementById('newStudentClasses').value = '';
+  closeModal('addStudentModal');
+  renderSidebar();
+  selectStudent(student.id);
+}
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function getAvatarClass(index) { return 'av-' + (index % 8); }
+
+function getStudentScore(studentId, since) {
+  let records = db.records.filter(r => r.studentId === studentId);
+  if (since) records = records.filter(r => new Date(r.timestamp) >= since);
+  const pos = records.filter(r => r.type === 'positive').length;
+  const neg = records.filter(r => r.type === 'negative').length;
+  return { pos, neg, net: pos - neg };
+}
+
+function renderSidebar() {
+  const container = document.getElementById('studentList');
+  if (!db.students.length) {
+    container.innerHTML = '<div style="padding:12px 20px;font-size:12px;color:var(--slate)">No students yet</div>';
+    return;
+  }
+  container.innerHTML = db.students.map((s, i) => {
+    const score = getStudentScore(s.id);
+    const net = score.net;
+    const scoreClass = net > 0 ? 'score-pos' : net < 0 ? 'score-neg' : 'score-neu';
+    const scoreLabel = net > 0 ? '+' + net : net;
+    const active = selectedStudentId === s.id ? ' active' : '';
+    return `<div class="student-item${active}" onclick="selectStudent('${s.id}')">
+      <div class="student-avatar ${getAvatarClass(i)}">${getInitials(s.name)}</div>
+      <div class="student-info">
+        <div class="student-name">${s.name}</div>
+        <div class="student-meta">${s.classes.length} class${s.classes.length !== 1 ? 'es' : ''}</div>
+      </div>
+      <span class="student-score ${scoreClass}">${scoreLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectStudent(id) {
+  selectedStudentId = id;
+  renderSidebar();
+  renderDashboard();
+  document.querySelectorAll('.nav-tab')[0].click(); // switch to dashboard
+  // actually just make sure dashboard tab is active
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-dashboard').classList.add('active');
+  document.querySelectorAll('.nav-tab')[0].classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════
+function renderDashboard() {
+  const container = document.getElementById('dashboardContent');
+  if (!selectedStudentId) {
+    if (!db.students.length) {
+      container.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">Welcome to ClassTrack</div>
+        <div class="empty-sub">Start by adding a student using the button above.</div>
+      </div>`;
+    } else {
+      container.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">👈</div>
+        <div class="empty-title">Select a student</div>
+        <div class="empty-sub">Choose a student from the sidebar to view their profile.</div>
+      </div>`;
+    }
+    return;
+  }
+
+  const student = db.students.find(s => s.id === selectedStudentId);
+  if (!student) return;
+  const idx = db.students.indexOf(student);
+
+  const allRecords = db.records.filter(r => r.studentId === selectedStudentId);
+  const today = startOfDay(new Date());
+  const weekAgo = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
+  const todayRecords = allRecords.filter(r => new Date(r.timestamp) >= today);
+  const weekRecords = allRecords.filter(r => new Date(r.timestamp) >= weekAgo);
+  const totalPos = allRecords.filter(r => r.type === 'positive').length;
+  const totalNeg = allRecords.filter(r => r.type === 'negative').length;
+
+  container.innerHTML = `
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="student-avatar ${getAvatarClass(idx)}" style="width:52px;height:52px;font-size:18px">${getInitials(student.name)}</div>
+        <div>
+          <div class="page-title">${student.name}</div>
+          <div class="page-sub">Enrolled in: ${student.classes.length ? student.classes.join(', ') : 'No classes yet'}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="openAddClassModal('${student.id}')">＋ Add Class</button>
+        <button class="btn btn-green" onclick="openBehaviourModal('positive')">✅ Positive</button>
+        <button class="btn btn-red" onclick="openBehaviourModal('negative')">⚠️ Negative</button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card stat-green">
+        <div class="stat-label">Total Positive</div>
+        <div class="stat-value">${totalPos}</div>
+        <div class="stat-hint">All time</div>
+      </div>
+      <div class="stat-card stat-red">
+        <div class="stat-label">Total Negative</div>
+        <div class="stat-value">${totalNeg}</div>
+        <div class="stat-hint">All time</div>
+      </div>
+      <div class="stat-card stat-navy">
+        <div class="stat-label">Today's Records</div>
+        <div class="stat-value">${todayRecords.length}</div>
+        <div class="stat-hint">${todayRecords.filter(r=>r.type==='positive').length} positive, ${todayRecords.filter(r=>r.type==='negative').length} negative</div>
+      </div>
+      <div class="stat-card stat-gold">
+        <div class="stat-label">Net Score</div>
+        <div class="stat-value" style="color:${totalPos-totalNeg>=0?'var(--green)':'var(--red)'}">${totalPos-totalNeg>=0?'+':''}${totalPos-totalNeg}</div>
+        <div class="stat-hint">This week: ${weekRecords.filter(r=>r.type==='positive').length - weekRecords.filter(r=>r.type==='negative').length >= 0?'+':''}${weekRecords.filter(r=>r.type==='positive').length - weekRecords.filter(r=>r.type==='negative').length}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recent Behaviour Log</div>
+            <div class="card-subtitle">Latest 15 records</div>
+          </div>
+        </div>
+        ${renderLogEntries(allRecords.slice(-15).reverse(), true)}
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Classes</div>
+        </div>
+        <div style="margin-bottom:12px">${student.classes.length ? student.classes.map(c =>
+          `<span class="class-tag">${c}<button class="class-tag-del" onclick="removeClassFromStudent('${student.id}','${c}')">✕</button></span>`
+        ).join('') : '<span style="color:var(--slate);font-size:13px">No classes added yet.</span>'}</div>
+        <button class="btn btn-ghost btn-sm" onclick="openAddClassModal('${student.id}')">＋ Add Class</button>
+
+        <div class="divider"></div>
+        <div class="card-title" style="margin-bottom:12px;font-size:14px">By Class Breakdown</div>
+        ${renderClassBreakdown(student)}
+
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:flex-end;gap:6px">
+          <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="confirmDeleteStudent('${student.id}')">🗑 Remove Student</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderClassBreakdown(student) {
+  if (!student.classes.length) return '<div style="color:var(--slate);font-size:12px">No classes yet.</div>';
+  return student.classes.map(cls => {
+    const records = db.records.filter(r => r.studentId === student.id && r.class === cls);
+    const pos = records.filter(r => r.type === 'positive').length;
+    const neg = records.filter(r => r.type === 'negative').length;
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="font-weight:600">${cls}</span>
+        <span style="color:var(--slate)">${pos} pos / ${neg} neg</span>
+      </div>
+      <div style="display:flex;gap:2px;height:5px;border-radius:3px;overflow:hidden;background:#eee">
+        ${pos+neg > 0 ? `<div style="width:${pos/(pos+neg)*100}%;background:var(--green)"></div>
+        <div style="width:${neg/(pos+neg)*100}%;background:var(--red)"></div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLogEntries(records, showDelete) {
+  if (!records.length) return '<div class="empty-state" style="padding:20px"><div class="empty-icon" style="font-size:24px">📭</div><div class="empty-title" style="font-size:14px">No records yet</div></div>';
+  return records.map(r => {
+    const dt = new Date(r.timestamp);
+    const dateStr = dt.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+    const timeStr = dt.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    const student = db.students.find(s => s.id === r.studentId);
+    return `<div class="log-entry">
+      <div class="log-dot log-dot-${r.type}"></div>
+      <div class="log-content">
+        <div class="log-behaviour">${r.behaviour}</div>
+        <div class="log-meta">
+          ${student && !showDelete ? `<strong>${student.name}</strong> · ` : ''}
+          ${dateStr} at ${timeStr}
+          ${r.class ? `<span class="log-class-badge" style="margin-left:6px">${r.class}</span>` : ''}
+        </div>
+        ${r.note ? `<div class="log-note">${r.note}</div>` : ''}
+      </div>
+      ${showDelete ? `<button class="log-delete" onclick="deleteRecord('${r.id}')" title="Delete">✕</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// BEHAVIOUR MODAL
+// ═══════════════════════════════════════════
+function openBehaviourModal(type) {
+  currentBehaviourType = type;
+  document.getElementById('customBehaviour').value = '';
+  document.getElementById('behaviourNote').value = '';
+  document.getElementById('behaviourModalTitle').textContent = selectedStudentId
+    ? 'Record Behaviour — ' + db.students.find(s=>s.id===selectedStudentId)?.name
+    : 'Record Behaviour';
+
+  // Populate class dropdown
+  const student = db.students.find(s => s.id === selectedStudentId);
+  const classSelect = document.getElementById('behaviourClass');
+  classSelect.innerHTML = student && student.classes.length
+    ? student.classes.map(c => `<option value="${c}">${c}</option>`).join('')
+    : '<option value="">No class</option>';
+
+  setBehaviourType(type);
+  openModal('behaviourModal');
+}
+
+function setBehaviourType(type) {
+  currentBehaviourType = type;
+  document.getElementById('typeTogglePos').className = 'type-toggle-btn' + (type === 'positive' ? ' active-pos' : '');
+  document.getElementById('typeToggleNeg').className = 'type-toggle-btn' + (type === 'negative' ? ' active-neg' : '');
+
+  const presets = PRESETS[type];
+  document.getElementById('behaviourPresets').innerHTML = presets.map(p =>
+    `<button class="beh-btn beh-btn-${type==='positive'?'pos':'neg'}" onclick="selectPreset('${p.label}')">
+      <span class="beh-icon">${p.icon}</span>${p.label}
+    </button>`
+  ).join('');
+
+  document.getElementById('saveBehaviourBtn').className = 'btn ' + (type === 'positive' ? 'btn-green' : 'btn-red');
+  document.getElementById('saveBehaviourBtn').textContent = type === 'positive' ? '✅ Save Positive' : '⚠️ Save Negative';
+}
+
+function selectPreset(label) {
+  document.getElementById('customBehaviour').value = label;
+}
+
+function saveBehaviour() {
+  const behaviour = document.getElementById('customBehaviour').value.trim();
+  if (!behaviour) return alert('Please select or type a behaviour.');
+  if (!selectedStudentId) return alert('No student selected.');
+  const cls = document.getElementById('behaviourClass').value;
+  const note = document.getElementById('behaviourNote').value.trim();
+
+  const record = {
+    id: Date.now().toString() + Math.random().toString(36).slice(2),
+    studentId: selectedStudentId,
+    type: currentBehaviourType,
+    behaviour,
+    class: cls,
+    note,
+    timestamp: new Date().toISOString()
+  };
+
+  db.records.push(record);
+  saveData();
+  closeModal('behaviourModal');
+  renderDashboard();
+  renderSidebar();
+}
+
+function deleteRecord(id) {
+  if (!confirm('Delete this record?')) return;
+  db.records = db.records.filter(r => r.id !== id);
+  saveData();
+  renderDashboard();
+  renderSidebar();
+  renderLog();
+}
+
+// ═══════════════════════════════════════════
+// CLASS MANAGEMENT
+// ═══════════════════════════════════════════
+function openAddClassModal(studentId) {
+  currentAddClassStudentId = studentId;
+  document.getElementById('newClassName').value = '';
+  openModal('addClassModal');
+}
+
+function addClassToStudent() {
+  const name = document.getElementById('newClassName').value.trim();
+  if (!name) return alert('Please enter a class name.');
+  const student = db.students.find(s => s.id === currentAddClassStudentId);
+  if (!student) return;
+  if (!student.classes.includes(name)) {
+    student.classes.push(name);
+    saveData();
+  }
+  closeModal('addClassModal');
+  renderDashboard();
+  renderSidebar();
+}
+
+function removeClassFromStudent(studentId, cls) {
+  if (!confirm(`Remove "${cls}" from this student?`)) return;
+  const student = db.students.find(s => s.id === studentId);
+  if (student) {
+    student.classes = student.classes.filter(c => c !== cls);
+    saveData();
+    renderDashboard();
+    renderSidebar();
+  }
+}
+
+// ═══════════════════════════════════════════
+// ALL STUDENTS VIEW
+// ═══════════════════════════════════════════
+function renderAllStudents() {
+  const grid = document.getElementById('allStudentsGrid');
+  if (!db.students.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">👥</div>
+      <div class="empty-title">No students yet</div>
+      <div class="empty-sub">Add your first student to get started.</div>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = db.students.map((s, i) => {
+    const score = getStudentScore(s.id);
+    const net = score.net;
+    return `<div class="card" style="margin:0">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="student-avatar ${getAvatarClass(i)}" style="width:44px;height:44px;font-size:16px">${getInitials(s.name)}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:15px">${s.name}</div>
+          <div style="font-size:11px;color:var(--slate)">${s.classes.length} class${s.classes.length!==1?'es':''}</div>
+        </div>
+        <span class="student-score ${net>0?'score-pos':net<0?'score-neg':'score-neu'}">${net>=0?'+':''}${net}</span>
+      </div>
+      <div style="margin-bottom:10px">${s.classes.length ? s.classes.map(c=>
+        `<span class="class-tag">${c}</span>`).join('') : '<span style="color:var(--slate);font-size:12px">No classes</span>'}</div>
+      <div style="display:flex;gap:6px;font-size:12px;color:var(--slate);margin-bottom:12px">
+        <span style="color:var(--green)">✅ ${score.pos}</span> &nbsp;
+        <span style="color:var(--red)">⚠️ ${score.neg}</span> &nbsp;
+        <span>Total: ${score.pos+score.neg}</span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-primary btn-sm" style="flex:1" onclick="selectStudent('${s.id}')">View Profile</button>
+        <button class="btn btn-ghost btn-sm" onclick="openAddClassModal('${s.id}')">＋ Class</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function confirmDeleteStudent(id) {
+  const student = db.students.find(s=>s.id===id);
+  if (!confirm(`Remove ${student?.name} and all their records? This cannot be undone.`)) return;
+  db.students = db.students.filter(s => s.id !== id);
+  db.records = db.records.filter(r => r.studentId !== id);
+  if (selectedStudentId === id) selectedStudentId = null;
+  saveData();
+  renderSidebar();
+  renderDashboard();
+}
+
+// ═══════════════════════════════════════════
+// FULL LOG
+// ═══════════════════════════════════════════
+function populateLogFilters() {
+  const sSelect = document.getElementById('logFilterStudent');
+  const cSelect = document.getElementById('logFilterClass');
+  const currentS = sSelect.value; const currentC = cSelect.value;
+  sSelect.innerHTML = '<option value="">All Students</option>' +
+    db.students.map(s => `<option value="${s.id}" ${s.id===currentS?'selected':''}>${s.name}</option>`).join('');
+  const allClasses = [...new Set(db.students.flatMap(s => s.classes))].sort();
+  cSelect.innerHTML = '<option value="">All Classes</option>' +
+    allClasses.map(c => `<option value="${c}" ${c===currentC?'selected':''}>${c}</option>`).join('');
+}
+
+function renderLog() {
+  const studentFilter = document.getElementById('logFilterStudent')?.value;
+  const classFilter = document.getElementById('logFilterClass')?.value;
+  const typeFilter = document.getElementById('logFilterType')?.value;
+
+  let records = [...db.records].reverse();
+  if (studentFilter) records = records.filter(r => r.studentId === studentFilter);
+  if (classFilter) records = records.filter(r => r.class === classFilter);
+  if (typeFilter) records = records.filter(r => r.type === typeFilter);
+
+  const container = document.getElementById('fullLogList');
+  if (!container) return;
+  if (!records.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No records found</div></div>`;
+    return;
+  }
+
+  container.innerHTML = records.map(r => {
+    const student = db.students.find(s => s.id === r.studentId);
+    const dt = new Date(r.timestamp);
+    const dateStr = dt.toLocaleDateString('en-GB', {weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+    const timeStr = dt.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    return `<div class="log-entry">
+      <div class="log-dot log-dot-${r.type}"></div>
+      <div class="log-content">
+        <div class="log-behaviour">${r.behaviour}</div>
+        <div class="log-meta">
+          ${student ? `<strong>${student.name}</strong> · ` : ''}
+          ${dateStr} at ${timeStr}
+          ${r.class ? `<span class="log-class-badge" style="margin-left:6px">${r.class}</span>` : ''}
+        </div>
+        ${r.note ? `<div class="log-note">${r.note}</div>` : ''}
+      </div>
+      <button class="log-delete" onclick="deleteRecord('${r.id}');populateLogFilters();renderLog();" title="Delete">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// REPORT TAB
+// ═══════════════════════════════════════════
+let reportPeriod = 'today';
+function setReportPeriod(period, btn) {
+  reportPeriod = period;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('customDateRange').classList.toggle('hidden', period !== 'custom');
+  renderReportTab();
+}
+
+function getDateRange() {
+  const now = new Date();
+  let from, to;
+  if (reportPeriod === 'today') {
+    from = startOfDay(now); to = now;
+  } else if (reportPeriod === 'week') {
+    from = new Date(now); from.setDate(from.getDate() - 7); to = now;
+  } else if (reportPeriod === 'month') {
+    from = new Date(now); from.setDate(1); from.setHours(0,0,0,0); to = now;
+  } else {
+    from = new Date(document.getElementById('reportFrom')?.value || now);
+    to = new Date(document.getElementById('reportTo')?.value || now);
+    to.setHours(23,59,59,999);
+  }
+  return { from, to };
+}
+
+function startOfDay(d) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
+
+function renderReportTab() {
+  const { from, to } = getDateRange();
+  const container = document.getElementById('reportContent');
+  if (!container) return;
+
+  const records = db.records.filter(r => {
+    const t = new Date(r.timestamp);
+    return t >= from && t <= to;
+  });
+
+  if (!db.students.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No data yet</div></div>`;
+    return;
+  }
+
+  const rows = db.students.map(s => {
+    const sr = records.filter(r => r.studentId === s.id);
+    const pos = sr.filter(r=>r.type==='positive').length;
+    const neg = sr.filter(r=>r.type==='negative').length;
+    return { student: s, records: sr, pos, neg, net: pos-neg };
+  }).filter(row => row.records.length > 0);
+
+  const allPos = records.filter(r=>r.type==='positive').length;
+  const allNeg = records.filter(r=>r.type==='negative').length;
+  const maxBoth = Math.max(...rows.map(r => r.pos + r.neg), 1);
+
+  container.innerHTML = `
+    <div class="stats-row">
+      <div class="stat-card stat-navy"><div class="stat-label">Period</div><div class="stat-value" style="font-size:16px;margin:6px 0">${formatDateRange(from,to)}</div></div>
+      <div class="stat-card stat-green"><div class="stat-label">Positive</div><div class="stat-value">${allPos}</div></div>
+      <div class="stat-card stat-red"><div class="stat-label">Negative</div><div class="stat-value">${allNeg}</div></div>
+      <div class="stat-card stat-gold"><div class="stat-label">Students Active</div><div class="stat-value">${rows.length}</div></div>
+    </div>
+
+    ${rows.length === 0 ? `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">No records in this period</div></div>` : `
+    <div class="card">
+      <div class="card-header"><div class="card-title">Student Overview</div></div>
+      ${rows.sort((a,b)=>b.net-a.net).map(row => `
+        <div class="report-student-row">
+          <div style="width:140px;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${row.student.name}</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+            <div style="display:flex;gap:2px;height:5px;border-radius:3px;overflow:hidden;background:#eee">
+              ${row.pos+row.neg>0?`<div style="width:${row.pos/(row.pos+row.neg)*100}%;background:var(--green)"></div><div style="width:${row.neg/(row.pos+row.neg)*100}%;background:var(--red)"></div>`:''}
+            </div>
+          </div>
+          <div style="width:100px;text-align:right;font-size:12px;color:var(--slate)">✅${row.pos} ⚠️${row.neg}</div>
+          <div style="width:50px;text-align:right;font-weight:700;font-size:13px;color:${row.net>=0?'var(--green)':'var(--red)'}">${row.net>=0?'+':''}${row.net}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${rows.map(row => `
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">${row.student.name}</div><div class="card-subtitle">${row.pos} positive · ${row.neg} negative · Net ${row.net>=0?'+':''}${row.net}</div></div>
+        </div>
+        ${renderLogEntries(row.records.reverse(), false)}
+      </div>
+    `).join('')}
+    `}
+  `;
+}
+
+function formatDateRange(from, to) {
+  const opts = {day:'2-digit',month:'short'};
+  if (reportPeriod === 'today') return 'Today';
+  return from.toLocaleDateString('en-GB',opts) + ' – ' + to.toLocaleDateString('en-GB',opts);
+}
+
+// ═══════════════════════════════════════════
+// PRINT REPORT
+// ═══════════════════════════════════════════
+function populatePrintStudents() {
+  const container = document.getElementById('printStudentCheckboxes');
+  container.innerHTML = `<label class="checkbox-item"><input type="checkbox" id="printAllStudents" checked onchange="toggleAllStudents(this)"> All students</label>` +
+    db.students.map(s =>
+      `<label class="checkbox-item"><input type="checkbox" class="print-student-cb" value="${s.id}" checked> ${s.name}</label>`
+    ).join('');
+}
+
+function toggleAllStudents(cb) {
+  document.querySelectorAll('.print-student-cb').forEach(c => c.checked = cb.checked);
+}
+
+function togglePrintCustom() {
+  const period = document.getElementById('printPeriod').value;
+  document.getElementById('printCustomDates').classList.toggle('hidden', period !== 'custom');
+}
+
+function printReport() {
+  const period = document.getElementById('printPeriod').value;
+  const inclPos = document.getElementById('inclPositive').checked;
+  const inclNeg = document.getElementById('inclNegative').checked;
+  const inclSum = document.getElementById('inclSummary').checked;
+  const selectedIds = [...document.querySelectorAll('.print-student-cb:checked')].map(c => c.value);
+
+  let from, to;
+  const now = new Date();
+  if (period === 'today') { from = startOfDay(now); to = now; }
+  else if (period === 'week') { from = new Date(now); from.setDate(from.getDate()-7); to = now; }
+  else if (period === 'month') { from = new Date(now); from.setDate(1); from.setHours(0,0,0,0); to = now; }
+  else {
+    from = new Date(document.getElementById('printFrom').value);
+    to = new Date(document.getElementById('printTo').value);
+    to.setHours(23,59,59,999);
+  }
+
+  const students = db.students.filter(s => selectedIds.includes(s.id));
+  const types = [];
+  if (inclPos) types.push('positive');
+  if (inclNeg) types.push('negative');
+
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>ClassTrack Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; color: #1a2744; font-size: 13px; }
+    h1 { font-size: 22px; border-bottom: 2px solid #1a2744; padding-bottom: 8px; }
+    h2 { font-size: 16px; color: #1a2744; margin-top: 24px; border-left: 4px solid #c9a84c; padding-left: 10px; }
+    h3 { font-size: 13px; color: #64748b; margin: 16px 0 6px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+    th { background: #1a2744; color: white; padding: 6px 10px; text-align: left; font-size: 12px; }
+    td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+    .pos { color: #2d7d4f; } .neg { color: #b83232; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 12px 0; }
+    .sum-box { border: 1px solid #ddd; border-radius: 6px; padding: 10px; text-align: center; }
+    .sum-val { font-size: 22px; font-weight: 700; }
+    .footer { margin-top: 40px; font-size: 11px; color: #aaa; border-top: 1px solid #eee; padding-top: 8px; }
+    @media print { body { margin: 20px; } }
+  </style></head><body>
+  <h1>ClassTrack — Behaviour Report</h1>
+  <p><strong>Period:</strong> ${from.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} to ${to.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p>
+  <p><strong>Generated:</strong> ${new Date().toLocaleString('en-GB')}</p>`;
+
+  students.forEach(student => {
+    let records = db.records.filter(r =>
+      r.studentId === student.id &&
+      new Date(r.timestamp) >= from &&
+      new Date(r.timestamp) <= to &&
+      types.includes(r.type)
+    );
+
+    const pos = records.filter(r=>r.type==='positive').length;
+    const neg = records.filter(r=>r.type==='negative').length;
+
+    html += `<h2>${student.name}</h2>`;
+    html += `<p><strong>Classes:</strong> ${student.classes.join(', ') || 'None'}</p>`;
+
+    if (inclSum) {
+      html += `<div class="summary-grid">
+        <div class="sum-box"><div class="sum-val pos">${pos}</div><div>Positive</div></div>
+        <div class="sum-box"><div class="sum-val neg">${neg}</div><div>Negative</div></div>
+        <div class="sum-box"><div class="sum-val">${pos+neg}</div><div>Total</div></div>
+        <div class="sum-box"><div class="sum-val" style="color:${pos-neg>=0?'#2d7d4f':'#b83232'}">${pos-neg>=0?'+':''}${pos-neg}</div><div>Net Score</div></div>
+      </div>`;
+    }
+
+    if (!records.length) {
+      html += `<p style="color:#64748b"><em>No records in this period.</em></p>`;
+    } else {
+      html += `<table><thead><tr><th>Date &amp; Time</th><th>Type</th><th>Behaviour</th><th>Class</th><th>Note</th></tr></thead><tbody>`;
+      records.sort((a,b) => new Date(a.timestamp)-new Date(b.timestamp)).forEach(r => {
+        const dt = new Date(r.timestamp);
+        html += `<tr>
+          <td>${dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})} ${dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</td>
+          <td class="${r.type}">${r.type === 'positive' ? '✅ Positive' : '⚠️ Negative'}</td>
+          <td>${r.behaviour}</td>
+          <td>${r.class || '—'}</td>
+          <td>${r.note || '—'}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+    }
+  });
+
+  html += `<div class="footer">ClassTrack Behaviour Report · Generated ${new Date().toLocaleString('en-GB')}</div></body></html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 500);
+
+  closeModal('reportModal');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+renderSidebar();
+renderDashboard();
+
+// Seed demo data if empty
+if (!db.students.length) {
+  const demo = [
+    { name: 'Alice Johnson', classes: ['English', 'Maths', 'Science'] },
+    { name: 'Ben Smith', classes: ['History', 'English', 'PE'] },
+  ];
+  demo.forEach(d => {
+    const id = Date.now().toString() + Math.random().toString(36).slice(2);
+    db.students.push({ id, name: d.name, classes: d.classes, createdAt: new Date().toISOString() });
+    // a few demo records
+    ['positive','negative','positive'].forEach((type, i) => {
+      db.records.push({
+        id: Date.now().toString() + Math.random().toString(36).slice(2),
+        studentId: id,
+        type,
+        behaviour: type==='positive' ? ['Great effort','Excellent work','Helping others'][i] : 'Off task',
+        class: d.classes[i % d.classes.length],
+        note: '',
+        timestamp: new Date(Date.now() - i * 3600000).toISOString()
+      });
+    });
+  });
+  saveData();
+  renderSidebar();
+  if (db.students.length) selectStudent(db.students[0].id);
+}
+</script>
+</body>
+</html>
