@@ -1,34 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClassTrack</title>
-<!-- Your fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
-/* Your original CSS styles, including your provided styles... */
 :root {
-  --brand:#1c54b2; --brand-dark:#1444a0; --brand-light:#e8f0fd;
-  --good:#0a8a4e; --good-bg:#edfaf4; --good-border:#b3e6ce;
-  --bad:#c0392b; --bad-bg:#fdf2f1; --bad-border:#f5c1bc;
-  --warn:#b45309; --warn-bg:#fffbeb; --warn-border:#fde68a;
-  --canvas:#f1f4f9; --surface:#fff; --surface-2:#f8fafc;
-  --ink:#1a2332; --ink-mid:#4b5a6e; --ink-light:#8494a8;
-  --line:#e3e8ef; --line-strong:#c9d3de;
-  --sidebar-w:240px; --topbar-h:60px;
-  --r:8px; --r-lg:12px;
-  --shadow-sm:0 1px 3px rgba(20,40,80,.07),0 1px 2px rgba(20,40,80,.05);
-  --shadow:0 4px 12px rgba(20,40,80,.08),0 1px 3px rgba(20,40,80,.05);
-  --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --brand:#2563eb;--brand-dark:#1d4ed8;--brand-light:#eff6ff;--brand-mid:#dbeafe;
+  --good:#16a34a;--good-bg:#f0fdf4;--good-border:#bbf7d0;--good-mid:#dcfce7;
+  --bad:#dc2626;--bad-bg:#fef2f2;--bad-border:#fecaca;--bad-mid:#fee2e2;
+  --warn:#d97706;--warn-bg:#fffbeb;
+  --canvas:#f8fafc;--surface:#ffffff;--surface-2:#f1f5f9;--surface-3:#e8edf4;
+  --ink:#0f172a;--ink-mid:#475569;--ink-soft:#64748b;--ink-light:#94a3b8;--ink-xlight:#cbd5e1;
+  --line:#e2e8f0;--line-strong:#cbd5e1;
+  --sidebar-w:248px;--topbar-h:56px;
+  --r:6px;--r-lg:10px;--r-xl:14px;
+  --shadow-xs:0 1px 2px rgba(15,23,42,.06);
+  --shadow-sm:0 1px 3px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.05);
+  --shadow:0 4px 16px rgba(15,23,42,.08),0 1px 4px rgba(15,23,42,.04);
+  --shadow-lg:0 10px 40px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
 }
-/* The rest of your styles... (copy all your styles here) */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* ─ TOPBAR ─ */
+.topbar{
+  height:var(--topbar-h);background:var(--surface);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 20px 0 0;
+  position:fixed;top:0;left:0;right:0;z-index:50;
+}
+.topbar-logo{
+  width:var(--sidebar-w);display:flex;align-items:center;gap:10px;
+  padding:0 20px;height:100%;flex-shrink:0;
+  border-right:1px solid var(--line);
+}
+.topbar-logo .mark{
+  width:32px;height:32px;
+  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+  border-radius:8px;display:grid;place-items:center;
+  font-size:15px;flex-shrink:0;
+  box-shadow:0 2px 6px rgba(37,99,235,.3);
+}
+.topbar-logo .wordmark{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.4px}
+.topbar-logo .sub{font-size:10px;color:var(--ink-light);font-weight:500;letter-spacing:.4px;text-transform:uppercase;margin-top:1px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.topbar-stat{display:flex;flex-direction:column;align-items:center;padding:0 16px;border-right:1px solid var(--line)}
+.topbar-stat:last-of-type{border-right:none}
+.topbar-stat .n{font-size:16px;font-weight:800;color:var(--ink);line-height:1}
+.topbar-stat .l{font-size:10px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.teacher-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface-2);border:1px solid var(--line);
+  border-radius:999px;padding:5px 12px 5px 5px;
+  margin-left:8px;
+}
+.teacher-av{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;
+}
+.teacher-pill span{font-size:13px;font-weight:600;color:var(--ink)}
+
+/* ─ LAYOUT ─ */
+.app-body{display:flex;margin-top:var(--topbar-h);min-height:calc(100vh - var(--topbar-h))}
+
+/* ─ SIDEBAR ─ */
+.sidebar{
+  width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--line);
+  position:fixed;top:var(--topbar-h);left:0;bottom:0;
+  overflow-y:auto;display:flex;flex-direction:column;z-index:40;padding:12px 0 20px;
+}
+.sidebar-section{
+  padding:18px 16px 6px;
+  font-size:10px;font-weight:700;color:var(--ink-xlight);
+  text-transform:uppercase;letter-spacing:.8px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 12px;border-radius:var(--r);margin:1px 8px;
+  font-size:13px;font-weight:500;color:var(--ink-soft);
+  cursor:pointer;transition:background .1s,color .1s;
+  border:0;background:none;width:calc(100% - 16px);text-align:left;
+}
+.nav-item:hover{background:var(--surface-2);color:var(--ink)}
+.nav-item.active{background:var(--brand-light);color:var(--brand);font-weight:600}
+.nav-item svg{flex-shrink:0}
+.nav-item.active svg{opacity:1}
+.sidebar-divider{height:1px;background:var(--line);margin:12px 16px}
+
+/* quick-add */
+.sidebar-add{padding:10px;margin:6px 10px;background:var(--canvas);border-radius:var(--r-lg);border:1px solid var(--line)}
+.sidebar-add .sa-title{font-size:11px;font-weight:700;color:var(--ink-mid);margin-bottom:8px;letter-spacing:.3px}
+.sidebar-add input,.sidebar-add select{
+  font:400 13px/1.4 var(--font);padding:7px 10px;
+  border:1.5px solid var(--line);border-radius:var(--r);
+  background:#fff;color:var(--ink);width:100%;outline:none;
+  transition:border-color .15s;margin-bottom:6px;
+}
+.sidebar-add input:focus,.sidebar-add select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.sa-btn{
+  width:100%;font:600 12px/1 var(--font);
+  background:var(--brand);color:#fff;
+  border:0;border-radius:var(--r);padding:8px;cursor:pointer;
+  transition:background .15s;
+}
+.sa-btn:hover{background:var(--brand-dark)}
+.sa-btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand-mid)}
+.sa-btn.ghost:hover{background:var(--brand-light)}
+
+/* ─ MAIN ─ */
+.main{margin-left:var(--sidebar-w);flex:1;padding:24px 28px;min-width:0;max-width:1100px}
+.page{display:none}
+.page.active{display:block}
+
+/* ─ PAGE HEADER ─ */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
+.page-header h1{font-size:19px;font-weight:800;letter-spacing:-.5px;color:var(--ink);line-height:1.2}
+.page-header p{font-size:13px;color:var(--ink-soft);margin-top:3px;font-weight:400}
+
+/* ─ CARDS ─ */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-xs)}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.card-sub{font-size:12px;color:var(--ink-light);margin-bottom:14px}
+
+/* ─ STAT ROW ─ */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-xl);padding:16px 18px;
+  box-shadow:var(--shadow-xs);
+}
+.stat-card .sn{font-size:28px;font-weight:800;line-height:1;letter-spacing:-.5px}
+.stat-card .sl{font-size:12px;color:var(--ink-soft);margin-top:5px;font-weight:500}
+
+/* ─ QUICK BAR ─ */
+.quick-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-xl);padding:14px 18px;margin-bottom:16px;
+  box-shadow:var(--shadow-xs);
+}
+.quick-bar select{
+  font:500 13px/1.4 var(--font);padding:8px 12px;
+  border:1.5px solid var(--line);border-radius:var(--r);
+  background:var(--surface-2);color:var(--ink);min-width:200px;outline:none;
+  transition:border-color .15s;
+}
+.quick-bar select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.quick-bar-label{font-size:12px;font-weight:600;color:var(--ink-soft);margin-right:4px}
+.quick-bar-btns{display:flex;gap:8px;margin-left:auto}
+
+/* ─ BUTTONS ─ */
+.btn{
+  font:600 13px/1 var(--font);border:0;border-radius:var(--r);
+  padding:8px 14px;cursor:pointer;transition:background .12s,box-shadow .12s,transform .08s;
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 1px 3px rgba(37,99,235,.25)}
+.btn-primary:hover{background:var(--brand-dark)}
+.btn-ghost{background:var(--surface-2);color:var(--ink-mid);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--surface-3);color:var(--ink)}
+.btn-good{background:var(--good);color:#fff;box-shadow:0 1px 3px rgba(22,163,74,.25)}
+.btn-good:hover{background:#15803d}
+.btn-bad{background:var(--bad);color:#fff;box-shadow:0 1px 3px rgba(220,38,38,.25)}
+.btn-bad:hover{background:#b91c1c}
+.btn-danger{background:transparent;color:var(--bad);border:1px solid var(--bad-border)}
+.btn-danger:hover{background:var(--bad-bg)}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:5px}
+
+/* ─ FORM ─ */
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px}
+input,select,textarea{
+  font:400 13px/1.4 var(--font);padding:9px 11px;
+  border:1.5px solid var(--line);border-radius:var(--r);
+  background:var(--surface-2);color:var(--ink);min-width:160px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.08);background:#fff}
+input[disabled]{background:var(--surface-2);color:var(--ink-mid);cursor:default;opacity:.7}
+textarea{min-height:68px;resize:vertical;width:100%}
+
+/* ─ TABLE ─ */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r-lg);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--surface-2)}
+th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fafbff}
+.tr{text-align:right}
+
+/* ─ CHIPS & BADGES ─ */
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--surface-2);color:var(--ink-mid);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:600;border:1px solid var(--line)}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700}
+.badge.good{background:var(--good-bg);color:var(--good);border:1px solid var(--good-border)}
+.badge.bad{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad-border)}
+.pts.pos{color:var(--good);font-weight:700}
+.pts.neg{color:var(--bad);font-weight:700}
+.muted{color:var(--ink-light)}
+.pill-list{display:flex;flex-wrap:wrap;gap:5px}
+.empty-state{text-align:center;padding:48px 20px;color:var(--ink-light);font-size:13px}
+.empty-state svg{margin-bottom:10px;opacity:.25}
+
+/* ═══════════════════════════════════════
+   CLASSTRACK ACTIVITY FEED (ClassCharts style)
+   ═══════════════════════════════════════ */
+
+.feed-wrap{display:flex;flex-direction:column}
+
+/* Date group header */
+.feed-date-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 0 8px;
+}
+.feed-date-header:first-child{padding-top:0}
+.feed-date-text{
+  font-size:13px;font-weight:700;color:var(--brand);
+  white-space:nowrap;
+}
+.feed-date-line{
+  flex:1;height:1px;background:var(--line);
+}
+
+/* Individual feed row */
+.feed-row{
+  display:flex;align-items:center;gap:0;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  margin-bottom:6px;
+  overflow:hidden;
+  transition:box-shadow .15s,border-color .15s;
+}
+.feed-row:hover{box-shadow:var(--shadow-sm);border-color:var(--line-strong)}
+
+/* Left coloured stripe */
+.feed-stripe{
+  width:4px;flex-shrink:0;align-self:stretch;
+}
+.feed-row.feed-good .feed-stripe{background:var(--good)}
+.feed-row.feed-bad .feed-stripe{background:var(--bad)}
+
+/* Points badge */
+.feed-pts-badge{
+  flex-shrink:0;
+  width:42px;height:42px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-size:13px;font-weight:800;
+  margin:0 14px 0 16px;
+}
+.feed-row.feed-good .feed-pts-badge{background:var(--good-mid);color:var(--good)}
+.feed-row.feed-bad .feed-pts-badge{background:var(--bad-mid);color:var(--bad)}
+
+/* Content */
+.feed-content{flex:1;min-width:0;padding:12px 0}
+.feed-student{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.feed-detail{font-size:12.5px;color:var(--ink-soft)}
+.feed-detail strong{color:var(--ink-mid);font-weight:600}
+.feed-meta-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.feed-tag{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:11px;font-weight:600;padding:2px 8px;
+  border-radius:4px;
+}
+.feed-tag.class-tag{background:#f0f4ff;color:#3b5fce;border:1px solid #dde7ff}
+.feed-tag.cat-tag{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line)}
+
+/* Time */
+.feed-time{
+  font-size:12px;color:var(--ink-light);font-weight:500;
+  padding:0 16px 0 12px;flex-shrink:0;
+  white-space:nowrap;
+}
+
+/* Delete btn */
+.feed-del{
+  padding:0 12px;flex-shrink:0;
+}
+.feed-del button{
+  border:0;background:none;cursor:pointer;
+  color:var(--ink-xlight);font-size:16px;line-height:1;
+  width:28px;height:28px;border-radius:5px;
+  display:grid;place-items:center;
+  transition:background .12s,color .12s;
+}
+.feed-del button:hover{background:var(--bad-bg);color:var(--bad)}
+
+/* ─ SEG ─ */
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface-2)}
+.seg button{border:0;background:transparent;padding:7px 16px;font:600 13px/1 var(--font);cursor:pointer;color:var(--ink-light);transition:background .12s,color .12s}
+.seg button.active{background:var(--brand);color:#fff}
+.seg button.active.bad-seg{background:var(--bad)}
+.seg button.active.good-seg{background:var(--good)}
+
+/* ─ BEHAVIOUR GRID ─ */
+.beh-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.b-opt{
+  border:1.5px solid var(--line);border-radius:var(--r);padding:10px 12px;
+  cursor:pointer;font-size:12.5px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  transition:border-color .12s,background .12s;color:var(--ink);background:var(--surface);
+}
+.b-opt:hover{border-color:var(--brand);background:var(--brand-light)}
+.b-opt.selected{border-color:var(--brand);background:var(--brand-light);color:var(--brand)}
+.b-opt.bad-opt:hover{border-color:var(--bad);background:var(--bad-bg)}
+.b-opt.bad-opt.selected{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.b-opt .b-pts{font-size:11px;font-weight:700;opacity:.6}
+
+/* ─ MODAL ─ */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--r-xl);max-width:520px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden;animation:mfade .18s ease}
+@keyframes mfade{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.modal-hd{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;background:var(--surface-2)}
+.modal-hd h3{margin:0;font-size:14px;font-weight:700;flex:1}
+.close-x{border:0;background:none;font-size:18px;cursor:pointer;color:var(--ink-light);width:28px;height:28px;display:grid;place-items:center;border-radius:5px;flex-shrink:0}
+.close-x:hover{background:var(--line);color:var(--ink)}
+.modal-bd{padding:20px;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.modal-ft{padding:12px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px;background:var(--surface-2)}
+
+/* ─ DT ─ */
+.dt-row{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--r);padding:8px 11px;cursor:pointer;transition:border-color .15s}
+.dt-row:hover{border-color:var(--brand)}
+.dt-display{font-size:13px;font-weight:500;color:var(--ink);flex:1}
+.dt-edit-hint{font-size:11px;color:var(--ink-light)}
+.dt-inputs{display:none;gap:8px}
+.dt-inputs.open{display:flex}
+
+/* ─ AWARDS SETTINGS ─ */
+.awards-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.award-row{display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid var(--line)}
+.award-row:last-child{border-bottom:0}
+.award-name-inp{flex:1;min-width:0;font:500 13px/1.4 var(--font);padding:7px 9px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface-2);color:var(--ink);outline:none;transition:border-color .15s}
+.award-name-inp:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.award-pts-inp{width:56px;min-width:0;font:700 13px/1.4 var(--font);padding:7px 8px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface-2);color:var(--ink);text-align:center;outline:none}
+.award-pts-inp:focus{border-color:var(--brand);background:#fff}
+.award-section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.award-section-hd span{font-size:13px;font-weight:700;color:var(--ink)}
+.save-flash{display:inline-block;font-size:12px;font-weight:600;color:var(--good);opacity:0;transition:opacity .3s;margin-left:10px}
+.save-flash.show{opacity:1}
+
+/* ─ REPORTS ─ */
+.report-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.rstat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.rstat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:14px 16px}
+.rstat .rn{font-size:24px;font-weight:800;line-height:1}
+.rstat .rl{font-size:12px;color:var(--ink-light);margin-top:3px}
+.section-label{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ─ MANAGE ─ */
+.manage-class-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.manage-class-row:last-child{border-bottom:0}
+.manage-class-row input{width:15px;height:15px;min-width:0;cursor:pointer}
+.manage-class-row span{font-size:13px;color:var(--ink)}
+
+/* ─ PRINT ─ */
+@media print{.topbar,.sidebar,.no-print,.overlay{display:none!important}body{background:#fff}.main{margin-left:0;padding:0}.card{box-shadow:none;border:0}#printHd{display:block!important}}
+#printHd{display:none;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+#printHd h2{margin:0;font-size:20px}
+
+@media(max-width:800px){
+  .sidebar{display:none}
+  .main{margin-left:0;padding:16px}
+  .stat-row,.rstat-row{grid-template-columns:repeat(2,1fr)}
+  .awards-grid{grid-template-columns:1fr}
+  .beh-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- Your existing header -->
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-logo">
     <div class="mark">🎓</div>
@@ -38,93 +388,117 @@
     </div>
   </div>
   <div class="topbar-right">
+    <div class="topbar-stat"><div class="n" id="statStudents">0</div><div class="l">Students</div></div>
+    <div class="topbar-stat"><div class="n" id="statClasses">0</div><div class="l">Classes</div></div>
+    <div class="topbar-stat"><div class="n" id="statRecords">0</div><div class="l">Records</div></div>
     <div class="teacher-pill">
       <div class="teacher-av">JL</div>
       <span>Mr J Leung</span>
-    </div>
-    <div class="topbar-stats">
-      <div class="ts-block"><div class="n" id="statStudents">0</div><div class="l">Students</div></div>
-      <div class="ts-block"><div class="n" id="statClasses">0</div><div class="l">Classes</div></div>
-      <div class="ts-block"><div class="n" id="statRecords">0</div><div class="l">Records</div></div>
     </div>
   </div>
 </div>
 
 <div class="app-body">
-<!-- Sidebar -->
+
+<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-section">Navigation</div>
   <button class="nav-item active" data-page="dashboard">
-    <!-- icon -->
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     Dashboard
   </button>
   <button class="nav-item" data-page="students">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     Students
   </button>
   <button class="nav-item" data-page="reports">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Reports
   </button>
   <button class="nav-item" data-page="settings">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 0 2-2v-1.5"/><circle cx="12" cy="12" r="3"/></svg>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     Award Settings
   </button>
+
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">Quick Add</div>
+
+  <div class="sidebar-add">
+    <div class="sa-title">Add Student</div>
+    <input id="sbStudentName" placeholder="Student name…">
+    <button class="sa-btn" id="sbAddStudent">+ Add Student</button>
+  </div>
+
+  <div class="sidebar-add" style="margin-top:6px">
+    <div class="sa-title">Add Class</div>
+    <input id="sbClassName" placeholder="Class name…">
+    <button class="sa-btn ghost" id="sbAddClass">+ Add Class</button>
+  </div>
 </aside>
 
-<!-- Main content -->
-<div class="main" style="margin-left:250px; padding:20px; flex:1; overflow:auto;">
+<!-- MAIN -->
+<main class="main">
 
-  <!-- Dashboard -->
+  <!-- ═══ DASHBOARD ═══ -->
   <div class="page active" id="page-dashboard">
-    <h1>Dashboard</h1>
-    <!-- Quick award -->
-    <div style="margin-bottom:20px">
-      <div style="display:flex; gap:10px; align-items:center;">
-        <select id="quickStudent"></select>
-        <button class="btn btn-good" id="quickGood">👍 Good</button>
-        <button class="btn btn-bad" id="quickBad">👎 Bad</button>
+    <div class="page-header">
+      <div><h1>Dashboard</h1><p>Overview and quick behaviour recording</p></div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="sn" style="color:var(--brand)" id="dStatStudents">0</div><div class="sl">Students</div></div>
+      <div class="stat-card"><div class="sn" style="color:var(--brand)" id="dStatClasses">0</div><div class="sl">Classes</div></div>
+      <div class="stat-card"><div class="sn" style="color:var(--good)" id="dStatGood">0</div><div class="sl">Good today</div></div>
+      <div class="stat-card"><div class="sn" style="color:var(--bad)" id="dStatBad">0</div><div class="sl">Bad today</div></div>
+    </div>
+
+    <div class="quick-bar">
+      <span class="quick-bar-label">Record for:</span>
+      <select id="quickStudent"></select>
+      <div class="quick-bar-btns">
+        <button class="btn btn-good" id="quickGood">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          Good behaviour
+        </button>
+        <button class="btn btn-bad" id="quickBad">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+          Bad behaviour
+        </button>
       </div>
     </div>
-    <!-- Stats -->
-    <div style="display:flex; gap:10px;">
-      <div class="stat-card"><div class="sn" id="dStatStudents">0</div><div class="sl">Students</div></div>
-      <div class="stat-card"><div class="sn" id="dStatClasses">0</div><div class="sl">Classes</div></div>
-      <div class="stat-card"><div class="sn" id="dStatGood">0</div><div class="sl">Good today</div></div>
-      <div class="stat-card"><div class="sn" id="dStatBad">0</div><div class="sl">Bad today</div></div>
-    </div>
-    <!-- Recent activity -->
+
     <div class="card">
       <div class="card-title">Recent Activity</div>
-      <div class="card-sub">Latest 15 behaviour records across all classes</div>
+      <div class="card-sub">Latest 20 behaviour records across all students</div>
       <div id="recentWrap"></div>
     </div>
   </div>
 
-  <!-- Students -->
-  <div class="page" id="page-students" style="display:none;">
-    <h1>Students &amp; Classes</h1>
-    <!-- Classes -->
-    <div style="margin-top:20px;">
-      <div style="margin-bottom:10px;">
-        <div style="font-weight:600;">Classes</div>
-        <div class="pill-list" id="classPills"></div>
-      </div>
-      <!-- Students -->
-      <div>
-        <div style="font-weight:600;">Students</div>
-        <div id="studentsWrap"></div>
-      </div>
+  <!-- ═══ STUDENTS ═══ -->
+  <div class="page" id="page-students">
+    <div class="page-header">
+      <div><h1>Students &amp; Classes</h1><p>Manage your students and class groups</p></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Classes</div>
+      <div class="card-sub">Classes can be shared across multiple students</div>
+      <div class="pill-list" id="classPills"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">All Students</div>
+      <div class="card-sub">Assign students to classes using the Manage button</div>
+      <div id="studentsWrap"></div>
     </div>
   </div>
 
-  <!-- Reports -->
-  <div class="page" id="page-reports" style="display:none;">
-    <h1>Reports</h1>
+  <!-- ═══ REPORTS ═══ -->
+  <div class="page" id="page-reports">
+    <div class="page-header">
+      <div><h1>Reports</h1><p>Generate and export behaviour reports</p></div>
+    </div>
     <div id="printHd"><h2>ClassTrack Behaviour Report — Mr J Leung</h2></div>
-    <div style="margin-top:20px;">
-      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+    <div class="card no-print">
+      <div class="report-controls">
         <div class="field">
           <label>Period</label>
           <select id="reportPeriod">
@@ -134,422 +508,506 @@
             <option value="custom">Custom range…</option>
           </select>
         </div>
-        <div class="field" id="fromWrap" style="display:none;"><label>From</label><input type="date" id="reportFrom"></div>
-        <div class="field" id="toWrap" style="display:none;"><label>To</label><input type="date" id="reportTo"></div>
+        <div class="field" id="fromWrap" style="display:none"><label>From</label><input type="date" id="reportFrom"></div>
+        <div class="field" id="toWrap" style="display:none"><label>To</label><input type="date" id="reportTo"></div>
         <div class="field">
           <label>Student</label>
           <select id="reportStudent"><option value="">All students</option></select>
         </div>
-        <button class="btn btn-primary" id="genReportBtn">Generate</button>
-        <button class="btn btn-ghost no-print" id="printReportBtn">🖨 Print / PDF</button>
+        <button class="btn btn-primary" id="genReportBtn">Generate report</button>
+        <button class="btn btn-ghost no-print" id="printReportBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print / PDF
+        </button>
       </div>
-      <div id="reportArea" style="margin-top:20px;"></div>
     </div>
+    <div id="reportArea"></div>
   </div>
 
-  <!-- Settings -->
-  <div class="page" id="page-settings" style="display:none;">
-    <h1>Award Settings</h1>
-    <div style="margin-top:20px;">
-      <div style="margin-bottom:20px;">
-        <label>Default Award Points</label>
-        <input type="number" id="defaultAwardPoints" value="1" step="1" style="width:80px;">
-      </div>
-      <div style="margin-bottom:20px;">
-        <label>Award Category</label>
-        <select id="awardCategory">
-          <option value="Participation">Participation</option>
-          <option value="Excellence">Excellence</option>
-          <option value="Effort">Effort</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" id="saveAwardsBtn">Save Changes</button>
+  <!-- ═══ SETTINGS ═══ -->
+  <div class="page" id="page-settings">
+    <div class="page-header">
+      <div><h1>Award Settings</h1><p>Customise behaviour names, categories and default points</p></div>
+      <button class="btn btn-primary" id="saveAwardsBtn">Save changes <span class="save-flash" id="saveFlash">✓ Saved</span></button>
     </div>
-    <div style="margin-top:20px;">
-      <div style="display:flex; gap:10px;">
-        <div style="flex:1;">
-          <div style="font-weight:600;">Positive Behaviours</div>
-          <div id="goodAwardsList"></div>
+    <div class="awards-grid">
+      <div class="card">
+        <div class="award-section-hd">
+          <span>👍 Positive Behaviours</span>
+          <span style="font-size:11px;color:var(--ink-light)">Name · Category · Pts</span>
         </div>
-        <div style="flex:1;">
-          <div style="font-weight:600;">Negative Behaviours</div>
-          <div id="badAwardsList"></div>
+        <div id="goodAwardsList"></div>
+      </div>
+      <div class="card">
+        <div class="award-section-hd">
+          <span>👎 Negative Behaviours</span>
+          <span style="font-size:11px;color:var(--ink-light)">Name · Category · Pts</span>
         </div>
+        <div id="badAwardsList"></div>
       </div>
     </div>
   </div>
 
-</div>
+</main>
 </div>
 
-<!-- Updated Award Modal Layout with design and functions (new style) -->
+<!-- AWARD MODAL -->
 <div class="overlay" id="awardOverlay">
-  <div class="modal" style="max-width:600px; text-align:center; padding:20px;">
-    <!-- Header -->
-    <div class="modal-hd" style="justify-content:center; position:relative;">
-      <h3 id="awardTitle" style="margin:0;">Record Behaviour</h3>
+  <div class="modal">
+    <div class="modal-hd">
+      <h3 id="awardTitle">Record Behaviour</h3>
       <button class="close-x" data-close>&times;</button>
     </div>
-    <!-- Body -->
-    <div class="modal-bd" style="padding:20px; max-height:60vh; overflow-y:auto;">
-      
-      <!-- Student Name -->
-      <h2 id="awardStudentName" style="margin-bottom:10px;font-weight:600;"></h2>
-
-      <!-- Award Icon & Name -->
-      <div class="award-display" style="font-size:40px; margin:20px 0 10px;">🏆</div>
-      <div id="awardNameDisplay" style="font-size:20px; font-weight:700; margin-bottom:10px;"></div>
-      <div style="font-size:14px; color:var(--ink-light); margin-bottom:20px;">Awarded by Mr J Leung in Class</div>
-
-      <!-- Select Behaviour -->
-      <div style="margin-bottom:15px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Select Behaviour</div>
-        <div class="beh-grid" id="behaviourGrid" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"></div>
+    <div class="modal-bd">
+      <div class="field" style="width:100%">
+        <label>Student</label>
+        <input id="awardStudentLabel" disabled>
       </div>
-
-      <!-- Date & Time -->
-      <div style="margin-top:15px;">
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Date &amp; Time</div>
-        <div class="dt-row" id="dtToggle" style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:8px; cursor:pointer;">
+      <div class="field" style="width:100%">
+        <label>Type</label>
+        <div class="seg" id="awardTypeSeg">
+          <button type="button" data-type="good" class="active good-seg">👍 Good</button>
+          <button type="button" data-type="bad">👎 Bad</button>
+        </div>
+      </div>
+      <div class="field" style="width:100%">
+        <label>Class</label>
+        <select id="awardClass"></select>
+        <span id="awardClassHint" style="font-size:11.5px;color:var(--ink-light);margin-top:3px"></span>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Select Behaviour</div>
+        <div class="beh-grid" id="behaviourGrid"></div>
+      </div>
+      <div class="field">
+        <label>Points</label>
+        <input type="number" id="awardPoints" value="1" step="1" style="max-width:100px;min-width:0">
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Date &amp; Time</div>
+        <div class="dt-row" id="dtToggle">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span class="dt-display" id="dtDisplay">Now</span>
+          <span class="dt-edit-hint">Click to change</span>
         </div>
-        <div class="dt-inputs" id="dtInputs" style="display:none; margin-top:8px;">
-          <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
-            <div style="display:flex; flex-direction:column; align-items:center;">
-              <label style="font-size:11px; font-weight:600;">Date</label>
-              <input type="date" id="awardDate" style="padding:7px; border:1.5px solid var(--line); border-radius:6px; min-width:120px;">
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:center;">
-              <label style="font-size:11px; font-weight:600;">Time</label>
-              <input type="time" id="awardTime" style="padding:7px; border:1.5px solid var(--line); border-radius:6px; min-width:120px;">
-            </div>
-            <button class="btn btn-ghost btn-sm" id="dtNowBtn" style="margin-top:8px;">Now</button>
+        <div class="dt-inputs" id="dtInputs">
+          <div class="field" style="flex:1">
+            <label>Date</label>
+            <input type="date" id="awardDate" style="min-width:0">
           </div>
+          <div class="field" style="flex:1">
+            <label>Time</label>
+            <input type="time" id="awardTime" style="min-width:0">
+          </div>
+          <button class="btn btn-ghost btn-sm" id="dtNowBtn" style="align-self:flex-end">Now</button>
         </div>
       </div>
-
-      <!-- Points -->
-      <div style="margin-top:15px;">
-        <label style="display:block; font-size:11px; font-weight:600; text-align:center;">Points</label>
-        <input type="number" id="awardPoints" value="1" step="1" style="width:80px; margin:auto; display:block; padding:7px; border:1.5px solid var(--line); border-radius:6px;">
-      </div>
-
-      <!-- Note -->
-      <div style="margin-top:15px;">
-        <label style="display:block; font-size:11px; font-weight:600; text-align:center;">Note (optional)</label>
-        <textarea id="awardNote" placeholder="Add any extra detail…" style="width:100%; padding:7px; border:1.5px solid var(--line); border-radius:6px; min-height:60px; resize:vertical;"></textarea>
+      <div class="field" style="width:100%">
+        <label>Note (optional)</label>
+        <textarea id="awardNote" placeholder="Add any extra detail…"></textarea>
       </div>
     </div>
-    <!-- Footer -->
-    <div class="modal-ft" style="display:flex; justify-content:center; gap:10px; padding-top:10px;">
-      <button class="btn btn-ghost" data-close style="margin-right:10px;">Cancel</button>
-      <button class="btn btn-primary" id="saveAwardBtn">Save</button>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" data-close>Cancel</button>
+      <button class="btn btn-primary" id="saveAwardBtn">Save record</button>
     </div>
   </div>
 </div>
 
-<!-- Manage Classes Modal (unchanged) -->
+<!-- MANAGE CLASSES MODAL -->
 <div class="overlay" id="manageOverlay">
-  <div class="modal" style="max-width:600px;">
-    <div class="modal-hd" style="display:flex; justify-content:space-between; align-items:center; padding:16px;">
+  <div class="modal">
+    <div class="modal-hd">
       <h3 id="manageTitle">Manage Classes</h3>
       <button class="close-x" data-close-manage>&times;</button>
     </div>
-    <div class="modal-bd" style="padding:20px; max-height:60vh; overflow-y:auto;">
-      <p style="margin:0 0 12px;font-size:13px;color:var(--ink-light);">Tick the classes this student belongs to.</p>
+    <div class="modal-bd">
+      <p style="font-size:13px;color:var(--ink-soft)">Tick the classes this student belongs to.</p>
       <div id="manageClassList"></div>
     </div>
-    <div class="modal-ft" style="display:flex; justify-content:center; gap:10px; padding:16px;">
+    <div class="modal-ft">
       <button class="btn btn-ghost" data-close-manage>Cancel</button>
-      <button class="btn btn-primary" id="saveManageBtn">Save Changes</button>
+      <button class="btn btn-primary" id="saveManageBtn">Save changes</button>
     </div>
   </div>
 </div>
 
-<!-- Your scripts, updated for new modal layout -->
 <script>
-(function() {
-  "use strict";
+(function(){
+"use strict";
+const STORE_KEY="classtrack.v4";
+const TEACHER="Mr J Leung";
 
-  // Your existing code...
-  const TEACHER="Mr J Leung";
+const DEFAULT_GOOD=[
+  {name:"Helping others",    cat:"Leadership",      pts:1},
+  {name:"Great participation",cat:"Achievement",    pts:1},
+  {name:"Excellent work",    cat:"Achievement",     pts:2},
+  {name:"On task",           cat:"Attitude",        pts:1},
+  {name:"Kindness",          cat:"Contribution",    pts:1},
+  {name:"Improvement",       cat:"Commitment",      pts:1},
+  {name:"Homework done",     cat:"Responsibility",  pts:1},
+  {name:"Teamwork",          cat:"Contribution",    pts:1},
+];
+const DEFAULT_BAD=[
+  {name:"Disruption",        cat:"Conduct",         pts:1},
+  {name:"Off task",          cat:"Effort",          pts:1},
+  {name:"Late",              cat:"Punctuality",     pts:1},
+  {name:"No homework",       cat:"Preparedness",    pts:1},
+  {name:"Disrespect",        cat:"Respect",         pts:2},
+  {name:"Talking over others",cat:"Focus",          pts:1},
+  {name:"Out of seat",       cat:"Safety",          pts:1},
+  {name:"Not listening",     cat:"Engagement",      pts:1},
+];
 
-  const $=s=>document.querySelector(s);
-  const $$=s=>Array.from(document.querySelectorAll(s));
-  const uid=()=>"id"+(Date.now()+Math.random()*1000).toString(36).slice(2,8);
-  const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));
-  const classById=id=>window.state.classes.find(c=>c.id===id);
-  const studentById=id=>window.state.students.find(s=>s.id===id);
+function loadState(){
+  try{const r=localStorage.getItem(STORE_KEY);if(r)return JSON.parse(r);}catch(e){}
+  return{students:[],classes:[],records:[],seq:1,goodAwards:[...DEFAULT_GOOD],badAwards:[...DEFAULT_BAD]};
+}
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){alert("Save failed: "+e.message);}}
+let state=loadState();
+if(!state.goodAwards)state.goodAwards=[...DEFAULT_GOOD];
+if(!state.badAwards)state.badAwards=[...DEFAULT_BAD];
 
-  // Load & Save
-  const STORAGE_KEY="classtrack-v4";
-  let state=JSON.parse(localStorage.getItem(STORAGE_KEY))||{students:[],classes:[],records:[],seq:1,goodAwards:[],badAwards:[]};
-  if(!state.goodAwards)state.goodAwards=[]; if(!state.badAwards)state.badAwards=[];
-  const save=()=>localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const uid=()=>"id"+(state.seq++)+"-"+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const classById=id=>state.classes.find(c=>c.id===id);
+const studentById=id=>state.students.find(s=>s.id===id);
+function fmtDT(ts){
+  const d=new Date(ts);
+  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})
+    +" at "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+}
+function fmtDate(ts){return new Date(ts).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});}
+function fmtTime(ts){return new Date(ts).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
+function fmtDayHeader(ts){
+  const d=new Date(ts);
+  const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+  const yesterday=today-86400000;
+  const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
+  const dayStr=d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+  if(day===today)return "Today — "+dayStr;
+  if(day===yesterday)return "Yesterday — "+dayStr;
+  return dayStr;
+}
+function localDateStr(d){return d.toLocaleDateString("en-CA");}
+function localTimeStr(d){return d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});}
 
-  // --- tab navigation ---
-  $$("nav .nav-item").forEach(btn=>{
-    btn.onclick=()=>{
-      $$("nav .nav-item").forEach(b=>b.classList.remove("active"));
-      btn.classList.add("active");
-      $$(".page").forEach(p=>p.classList.remove("active"));
-      $("#page-"+btn.dataset.page).classList.add("active");
-    };
+/* ── PAGES ── */
+$$(".nav-item[data-page]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    $$(".nav-item").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    $$(".page").forEach(p=>p.classList.remove("active"));
+    $("#page-"+btn.dataset.page).classList.add("active");
+    if(btn.dataset.page==="settings")renderAwardSettings();
+  });
+});
+
+/* ── SIDEBAR ADD ── */
+$("#sbAddStudent").addEventListener("click",()=>{
+  const name=$("#sbStudentName").value.trim();
+  if(!name){alert("Enter a student name.");return;}
+  state.students.push({id:uid(),name,classIds:[]});
+  $("#sbStudentName").value="";
+  saveState();renderAll();
+});
+$("#sbStudentName").addEventListener("keydown",e=>{if(e.key==="Enter")$("#sbAddStudent").click();});
+$("#sbAddClass").addEventListener("click",()=>{
+  const name=$("#sbClassName").value.trim();
+  if(!name){alert("Enter a class name.");return;}
+  if(state.classes.some(c=>c.name.toLowerCase()===name.toLowerCase())){alert("Class already exists.");return;}
+  state.classes.push({id:uid(),name});
+  $("#sbClassName").value="";
+  saveState();renderAll();
+});
+$("#sbClassName").addEventListener("keydown",e=>{if(e.key==="Enter")$("#sbAddClass").click();});
+
+/* ── CLASSES ── */
+function deleteClass(id){
+  if(!confirm("Delete this class? Students will be unassigned. Records are kept."))return;
+  state.classes=state.classes.filter(c=>c.id!==id);
+  state.students.forEach(s=>{s.classIds=s.classIds.filter(cid=>cid!==id);});
+  saveState();renderAll();
+}
+function renderClassPills(){
+  const wrap=$("#classPills");
+  if(!state.classes.length){wrap.innerHTML='<span class="muted" style="font-size:13px">No classes yet — add one in the sidebar.</span>';return;}
+  wrap.innerHTML=state.classes.map(c=>{
+    const n=state.students.filter(s=>s.classIds.includes(c.id)).length;
+    return `<span class="chip">${esc(c.name)} <span style="opacity:.55">· ${n}</span>
+      <button style="border:0;background:none;cursor:pointer;color:var(--bad);font-size:14px;margin-left:4px;padding:0 0 0 2px;line-height:1;vertical-align:middle" data-delclass="${c.id}">&times;</button>
+    </span>`;
+  }).join("");
+  wrap.querySelectorAll("[data-delclass]").forEach(b=>b.addEventListener("click",()=>deleteClass(b.dataset.delclass)));
+}
+
+/* ── STUDENTS ── */
+function deleteStudent(id){
+  if(!confirm("Delete this student and all their records?"))return;
+  state.students=state.students.filter(s=>s.id!==id);
+  state.records=state.records.filter(r=>r.studentId!==id);
+  saveState();renderAll();
+}
+function renderStudents(){
+  const wrap=$("#studentsWrap");
+  if(!state.students.length){
+    wrap.innerHTML='<div class="empty-state">No students yet. Add one using the sidebar.</div>';return;
+  }
+  let h=`<div class="tbl-wrap"><table><thead><tr>
+    <th>Student</th><th>Classes</th><th class="tr">Records</th><th class="tr">Net pts</th><th class="tr">Actions</th>
+  </tr></thead><tbody>`;
+  state.students.forEach(s=>{
+    const cls=s.classIds.map(cid=>{const c=classById(cid);return c?`<span class="chip" style="font-size:11px">${esc(c.name)}</span>`:""}).join("")||'<span class="muted" style="font-size:12px">None</span>';
+    const recs=state.records.filter(r=>r.studentId===s.id);
+    const net=recs.reduce((a,r)=>a+(r.type==="good"?r.points:-r.points),0);
+    h+=`<tr>
+      <td><strong>${esc(s.name)}</strong></td>
+      <td><div class="pill-list">${cls}</div></td>
+      <td class="tr muted">${recs.length}</td>
+      <td class="tr"><span class="pts ${net>0?"pos":net<0?"neg":""}">${net>0?"+":""}${net}</span></td>
+      <td class="tr" style="white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" data-manage="${s.id}">Manage</button>
+        <button class="btn btn-danger btn-sm" data-delstudent="${s.id}" style="margin-left:4px">Delete</button>
+      </td>
+    </tr>`;
+  });
+  h+="</tbody></table></div>";
+  wrap.innerHTML=h;
+  wrap.querySelectorAll("[data-manage]").forEach(b=>b.addEventListener("click",()=>openManage(b.dataset.manage)));
+  wrap.querySelectorAll("[data-delstudent]").forEach(b=>b.addEventListener("click",()=>deleteStudent(b.dataset.delstudent)));
+}
+
+/* ── MANAGE MODAL ── */
+let manageId=null;
+function openManage(sid){
+  manageId=sid;
+  const s=studentById(sid);
+  $("#manageTitle").textContent="Classes for "+s.name;
+  const list=$("#manageClassList");
+  if(!state.classes.length){list.innerHTML='<div class="empty-state">No classes yet.</div>';return;}
+  list.innerHTML=state.classes.map(c=>`
+    <label class="manage-class-row">
+      <input type="checkbox" value="${c.id}" ${s.classIds.includes(c.id)?"checked":""}>
+      <span>${esc(c.name)}</span>
+    </label>`).join("");
+  $("#manageOverlay").classList.add("open");
+}
+$("#saveManageBtn").addEventListener("click",()=>{
+  const s=studentById(manageId);
+  s.classIds=Array.from($("#manageClassList").querySelectorAll("input:checked")).map(i=>i.value);
+  saveState();renderAll();
+  $("#manageOverlay").classList.remove("open");
+});
+$$("[data-close-manage]").forEach(b=>b.addEventListener("click",()=>$("#manageOverlay").classList.remove("open")));
+
+/* ── QUICK SELECT ── */
+function renderQuickStudent(){
+  const sel=$("#quickStudent");
+  if(!state.students.length){sel.innerHTML='<option value="">No students yet</option>';return;}
+  const cur=sel.value;
+  sel.innerHTML=state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");
+  if(cur)sel.value=cur;
+}
+$("#quickGood").addEventListener("click",()=>openAward($("#quickStudent").value,"good"));
+$("#quickBad").addEventListener("click",()=>openAward($("#quickStudent").value,"bad"));
+
+/* ══════════════════════════════════════
+   ACTIVITY FEED (ClassCharts style)
+   ══════════════════════════════════════ */
+function buildFeed(records, showDel=true){
+  if(!records.length)return '<div class="empty-state">No records yet. Record a behaviour above.</div>';
+
+  // Group by calendar date
+  const sorted=[...records].sort((a,b)=>b.ts-a.ts);
+  const groups={};
+  const groupOrder=[];
+  sorted.forEach(r=>{
+    const d=new Date(r.ts);
+    const key=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
+    if(!groups[key]){groups[key]=[];groupOrder.push(key);}
+    groups[key].push(r);
   });
 
-  // --- render class pills ---
-  function renderClassPills() {
-    const wrap=$("#classPills");
-    if(!state.classes.length){wrap.innerHTML='<span class="muted" style="font-size:13px">No classes yet</span>';return;}
-    wrap.innerHTML=state.classes.map(c=>{
-      const n=state.students.filter(s=>s.classIds.includes(c.id)).length;
-      return `<span class="chip">${esc(c.name)} <span style="opacity:.6">· ${n}</span>
-      <button style="border:0;background:none;cursor:pointer;color:var(--bad);font-size:14px;margin-left:4px;padding:0;line-height:1" data-delclass="${c.id}">&times;</button></span>`;
-    }).join('');
-    wrap.querySelectorAll("[data-delclass]").forEach(b=>b.onclick=()=>deleteClass(b.dataset.delclass));
-  }
-
-  // --- render students ---
-  function renderStudents() {
-    const wrap=$("#studentsWrap");
-    if(!state.students.length){wrap.innerHTML='<div class="empty-state">No students yet.</div>';return;}
-    let h=`<table style="width:100%; border-collapse:collapse;"><thead><tr>
-      <th>Student</th><th>Classes</th><th>Records</th><th style="text-align:right;">Net pts</th><th style="text-align:right;">Actions</th>
-    </tr></thead><tbody>`;
-    for(const s of state.students){
-      const cls=s.classIds.map(cid=>{const c=classById(cid);return c?`<span class="chip" style="font-size:11px">${esc(c.name)}</span>`:"";}).join("")||'<span class="muted" style="font-size:12px">None</span>';
-      const recs=state.records.filter(r=>r.studentId===s.id);
-      const net=recs.reduce((a,r)=>a+(r.type==="good"?r.points:-r.points),0);
-      h+=`<tr>
-        <td><strong>${esc(s.name)}</strong></td>
-        <td><div class="pill-list">${cls}</div></td>
-        <td class="muted">${recs.length}</td>
-        <td class="muted"><span class="pts ${net>=0?"pos":"neg"}">${net>0?"+":""}${net}</span></td>
-        <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm" data-manage="${s.id}">Manage</button>
-          <button class="btn btn-danger btn-sm" data-del="${s.id}">Delete</button>
-        </td>
-      </tr>`;
-    }
-    h+="</tbody></table>";
-    $("#studentsWrap").innerHTML=h;
-    // event handlers
-    $("#studentsWrap").querySelectorAll("[data-manage]").forEach(b=>b.onclick=()=>openManage(b.dataset.manage));
-    $("#studentsWrap").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>deleteStudent(b.dataset.del));
-  }
-
-  function deleteStudent(id){
-    if(!confirm("Delete this student?"))return;
-    state.students=state.students.filter(s=>s.id!==id);
-    state.records=state.records.filter(r=>r.studentId!==id);
-    save(); renderStudents();
-  }
-
-  function deleteClass(id){
-    if(!confirm("Delete this class? Students will be unassigned."))return;
-    state.classes=state.classes.filter(c=>c.id!==id);
-    state.students.forEach(s=>{s.classIds=s.classIds.filter(cid=>cid!==id);});
-    save(); renderClassPills(); renderStudents();
-  }
-
-  // --- manage classes modal ---
-  let manageId=null;
-  function openManage(sid){
-    manageId=sid;
-    const s=studentById(sid);
-    $("#manageTitle").textContent="Classes for "+s.name;
-    const list=$("#manageClassList");
-    if(!state.classes.length){list.innerHTML='<div class="empty-state">No classes yet</div>';return;}
-    list.innerHTML=state.classes.map(c=>`
-      <label style="display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line)">
-        <input type="checkbox" value="${c.id}" ${s.classIds.includes(c.id)?"checked":""} style="width:15px;height:15px;">
-        <span style="font-size:13px">${esc(c.name)}</span>
-      </label>`).join('');
-    $("#manageOverlay").classList.add("open");
-  }
-  $("#saveManageBtn").onclick=()=>{
-    const s=studentById(manageId);
-    s.classIds=Array.from($("#manageClassList").querySelectorAll("input[type='checkbox']:checked")).map(i=>i.value);
-    save(); renderStudents(); $("#manageOverlay").classList.remove("open");
-  }
-  $("[data-close-manage]").onclick=()=>$("#manageOverlay").classList.remove("open");
-
-  // --- Quick select ---
-  function renderQuickStudent(){
-    const sel=$("#quickStudent");
-    if(!state.students.length){sel.innerHTML='<option value="">No students</option>';return;}
-    sel.innerHTML=state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
-  }
-  $("#quickGood").onclick=()=>openAward($("#quickStudent").value,"good");
-  $("#quickBad").onclick=()=>openAward($("#quickStudent").value,"bad");
-
-  // --- build recent activity cards ---
-  function buildCard(r,showDel=true){
-    const s=studentById(r.studentId);const c=classById(r.classId);
-    const pts=r.type==="good"?r.points:-r.points;
-    return `<div class="rec-card ${r.type}-rec">
-      <div class="rec-bar"></div>
-      <div class="rec-inner">
-        <div class="rec-body">
-          <div class="rec-beh">${esc(r.behaviour)}</div>
-          <div class="rec-meta">
-            <span class="badge ${r.type}" style="font-size:11px;padding:2px 8px">${r.type==="good"?"👍 Good":"👎 Bad"}</span>
-            <span style="opacity:.4">·</span>
-            <span class="tag">📚 ${c?esc(c.name):"Unknown"}</span>
-            <span style="opacity:.4">·</span>
-            <strong style="color:var(--ink-mid)">${s?esc(s.name):"(deleted)"}</strong>
-          </div>
-          <div class="rec-meta" style="margin-top:4px">
-            <span class="tag cat-tag">🏷 <strong>${esc(r.category||"—")}</strong> by ${esc(TEACHER)}</span>
-            <span style="opacity:.4">·</span>
-            <span>${fmtDT(r.ts)}</span>
-          </div>
-          ${r.note?`<div class="rec-note">${esc(r.note)}</div>`:""}
-        </div>
-        <div class="rec-side" style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-          <div class="rec-pts ${pts>=0?"pos":"neg"}">${pts>0?"+":""}${pts}</div>
-          ${showDel?`<button class="btn btn-danger btn-sm" data-delrec="${r.id}">✕</button>`:""}
-        </div>
-      </div>
+  let html='<div class="feed-wrap">';
+  groupOrder.forEach(key=>{
+    const recs=groups[key];
+    html+=`<div class="feed-date-header">
+      <span class="feed-date-text">${fmtDayHeader(key)}</span>
+      <span class="feed-date-line"></span>
     </div>`;
-  }
-  function renderRecent(){
-    const wrap=$("#recentWrap");
-    if(!state.records.length){wrap.innerHTML='<div class="empty-state">No records yet.</div>';return;}
-    const recent=state.records.slice().sort((a,b)=>b.ts - a.ts).slice(0,15);
-    wrap.innerHTML=`<div class="rec-list">${recent.map(r=>buildCard(r,true)).join("")}</div>`;
-    wrap.querySelectorAll("[data-delrec]").forEach(b=>b.onclick=()=>{if(confirm("Delete?")){state.records=state.records.filter(r=>r.id!==b.dataset.delrec);save();renderRecent();}});
-  }
-
-  // --- award modal handlers ---
-  let awardStudentId=null;
-  let selBeh=null;
-
-  // open award modal
-  function openAward(sid,type){
-    if(!sid){alert("Please add and select a student.");return;}
-    awardStudentId=sid;
-    const s=studentById(sid);
-    $("#awardStudentName").textContent=s.name;
-    $("#awardTitle").textContent="Record Behaviour — " + s.name;
-
-    // Set class select options
-    const sel=$("#awardClass");
-    const hint=$("#awardClassHint");
-    if(s.classIds.length){
-      sel.innerHTML=s.classIds.map(cid=>{const c=classById(cid);return c?`<option value="${c.id}">${esc(c.name)}</option>`:"";}).join("");
-      hint.textContent="";
-    }else{
-      sel.innerHTML='<option value="">— no classes assigned —</option>';
-      hint.textContent="Assign classes to this student in the Students page first.";
-    }
-
-    // Set default date/time to now
-    setDtNow();
-    $("#dtInputs").classList.remove("open");
-    $("#dtDisplay").textContent="Now ("+fmtDT(Date.now())+")";
-
-    $("#awardPoints").value=1;
-    $("#awardNote").value="";
-  }
-
-  // set award type and behaviour buttons
-  function setAwardType(type){
-    awardType=type; selBeh=null;
-    $$("#awardTypeSeg button").forEach(b=>{
-      b.classList.toggle("active",b.dataset.type===type);
-      b.classList.toggle("good-seg",type==="good");
-      b.classList.toggle("bad-seg",type==="bad");
+    recs.forEach(r=>{
+      const s=studentById(r.studentId);
+      const c=classById(r.classId);
+      const pts=r.type==="good"?"+"+r.points:"-"+r.points;
+      html+=`<div class="feed-row feed-${r.type}" data-id="${r.id}">
+        <div class="feed-stripe"></div>
+        <div class="feed-pts-badge">${pts}</div>
+        <div class="feed-content">
+          <div class="feed-student">${s?esc(s.name):"(deleted student)"}</div>
+          <div class="feed-detail"><strong>${esc(r.behaviour)}</strong> awarded by ${esc(TEACHER)} in ${c?esc(c.name):"Unknown class"}.</div>
+          <div class="feed-meta-tags">
+            <span class="feed-tag class-tag">📚 ${c?esc(c.name):"?"}</span>
+            <span class="feed-tag cat-tag">🏷 ${esc(r.category||"General")}</span>
+            ${r.note?`<span class="feed-tag cat-tag">💬 ${esc(r.note)}</span>`:""}
+          </div>
+        </div>
+        <div class="feed-time">${fmtTime(r.ts)}</div>
+        ${showDel?`<div class="feed-del"><button data-delrec="${r.id}" title="Delete record">&times;</button></div>`:""}
+      </div>`;
     });
-    const list=type==="good"?state.goodAwards:state.badAwards;
-    $("#behaviourGrid").innerHTML=list.map((a,i)=>`
-      <div class="b-opt ${type==="bad"?"bad-opt":""}" data-i="${i}">
-        <span>${esc(a.name)}</span>
-        <span class="b-cat">${esc(a.cat)} · ${a.pts}pt</span>
+  });
+  html+="</div>";
+  return html;
+}
+
+function renderRecent(){
+  const wrap=$("#recentWrap");
+  const recent=state.records.slice().sort((a,b)=>b.ts-a.ts).slice(0,20);
+  wrap.innerHTML=buildFeed(recent,true);
+  wrap.querySelectorAll("[data-delrec]").forEach(b=>b.addEventListener("click",()=>{
+    if(!confirm("Delete this record?"))return;
+    state.records=state.records.filter(r=>r.id!==b.dataset.delrec);
+    saveState();renderAll();
+  }));
+}
+
+/* ── AWARD MODAL ── */
+let awardStudentId=null,awardType="good",selBeh=null;
+
+function setDtNow(){
+  const now=new Date();
+  $("#awardDate").value=localDateStr(now);
+  $("#awardTime").value=localTimeStr(now);
+  updateDtDisplay();
+}
+function updateDtDisplay(){
+  const d=$("#awardDate").value,t=$("#awardTime").value;
+  if(d&&t){const dt=new Date(d+"T"+t);$("#dtDisplay").textContent=fmtDT(dt.getTime());}
+}
+function getAwardTs(){
+  const d=$("#awardDate").value,t=$("#awardTime").value;
+  if(d&&t)return new Date(d+"T"+t).getTime();
+  return Date.now();
+}
+$("#dtToggle").addEventListener("click",()=>{
+  const inp=$("#dtInputs");
+  inp.classList.toggle("open");
+  if(inp.classList.contains("open")&&!$("#awardDate").value)setDtNow();
+});
+$("#dtNowBtn").addEventListener("click",setDtNow);
+$("#awardDate").addEventListener("change",updateDtDisplay);
+$("#awardTime").addEventListener("change",updateDtDisplay);
+
+function openAward(sid,type){
+  if(!sid){alert("Please add and select a student first.");return;}
+  awardStudentId=sid;awardType=type;selBeh=null;
+  const s=studentById(sid);
+  $("#awardStudentLabel").value=s.name;
+  $("#awardTitle").textContent="Record Behaviour — "+s.name;
+  setAwardType(type);
+  const sel=$("#awardClass"),hint=$("#awardClassHint");
+  if(s.classIds.length){
+    sel.innerHTML=s.classIds.map(cid=>{const c=classById(cid);return c?`<option value="${c.id}">${esc(c.name)}</option>`:""}).join("");
+    hint.textContent="";
+  }else{
+    sel.innerHTML='<option value="">— no classes assigned —</option>';
+    hint.textContent="Assign classes to this student in the Students page first.";
+  }
+  setDtNow();
+  $("#dtInputs").classList.remove("open");
+  $("#dtDisplay").textContent="Now ("+fmtDT(Date.now())+")";
+  $("#awardPoints").value=1;
+  $("#awardNote").value="";
+  $("#awardOverlay").classList.add("open");
+}
+
+function setAwardType(type){
+  awardType=type;selBeh=null;
+  $$("#awardTypeSeg button").forEach(b=>{
+    b.classList.remove("active","good-seg","bad-seg");
+    if(b.dataset.type===type){b.classList.add("active",type+"-seg");}
+  });
+  const list=type==="good"?state.goodAwards:state.badAwards;
+  $("#behaviourGrid").innerHTML=list.map((a,i)=>`
+    <div class="b-opt ${type==="bad"?"bad-opt":""}" data-idx="${i}">
+      <span>${esc(a.name)}</span>
+      <span class="b-pts">${a.cat} · ${a.pts}pt</span>
+    </div>`).join("");
+  $$("#behaviourGrid .b-opt").forEach(opt=>opt.addEventListener("click",()=>{
+    $$("#behaviourGrid .b-opt").forEach(o=>o.classList.remove("selected"));
+    opt.classList.add("selected");
+    const idx=parseInt(opt.dataset.idx);
+    selBeh=(type==="good"?state.goodAwards:state.badAwards)[idx];
+    $("#awardPoints").value=selBeh.pts;
+  }));
+}
+$$("#awardTypeSeg button").forEach(b=>b.addEventListener("click",()=>setAwardType(b.dataset.type)));
+
+$("#saveAwardBtn").addEventListener("click",()=>{
+  const classId=$("#awardClass").value;
+  if(!classId){alert("Please select a class.");return;}
+  if(!selBeh){alert("Please choose a behaviour.");return;}
+  let pts=parseInt($("#awardPoints").value,10);
+  if(isNaN(pts)||pts<0)pts=1;
+  state.records.push({
+    id:uid(),studentId:awardStudentId,classId,
+    type:awardType,behaviour:selBeh.name,category:selBeh.cat,
+    points:pts,note:$("#awardNote").value.trim(),
+    ts:getAwardTs()
+  });
+  saveState();renderAll();
+  $("#awardOverlay").classList.remove("open");
+});
+$$("[data-close]").forEach(b=>b.addEventListener("click",()=>$("#awardOverlay").classList.remove("open")));
+$$(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
+
+/* ── AWARD SETTINGS ── */
+function renderAwardSettings(){
+  function buildList(arr,id){
+    const wrap=$(id);
+    wrap.innerHTML=arr.map((a,i)=>`
+      <div class="award-row">
+        <input class="award-name-inp" data-i="${i}" data-field="name" value="${esc(a.name)}" placeholder="Behaviour name">
+        <input class="award-name-inp" data-i="${i}" data-field="cat" value="${esc(a.cat)}" placeholder="Category" style="max-width:110px">
+        <input class="award-pts-inp" type="number" data-i="${i}" data-field="pts" value="${a.pts}" min="1">
       </div>`).join("");
-    // add click to select behaviour
-    $$("#behaviourGrid .b-opt").forEach(opt=>{
-      opt.onclick=()=>{
-        $$("#behaviourGrid .b-opt").forEach(o=>o.classList.remove("selected"));
-        opt.classList.add("selected");
-        const i=parseInt(opt.dataset.i);
-        selBeh=type==="good"?state.goodAwards[i]:state.badAwards[i];
-        $("#awardPoints").value=selBeh.pts;
-      };
-    });
   }
+  buildList(state.goodAwards,"#goodAwardsList");
+  buildList(state.badAwards,"#badAwardsList");
+}
+$("#saveAwardsBtn").addEventListener("click",()=>{
+  $$("#goodAwardsList .award-row").forEach((row,i)=>{
+    state.goodAwards[i].name=row.querySelector('[data-field="name"]').value.trim()||state.goodAwards[i].name;
+    state.goodAwards[i].cat=row.querySelector('[data-field="cat"]').value.trim()||state.goodAwards[i].cat;
+    state.goodAwards[i].pts=parseInt(row.querySelector('[data-field="pts"]').value)||1;
+  });
+  $$("#badAwardsList .award-row").forEach((row,i)=>{
+    state.badAwards[i].name=row.querySelector('[data-field="name"]').value.trim()||state.badAwards[i].name;
+    state.badAwards[i].cat=row.querySelector('[data-field="cat"]').value.trim()||state.badAwards[i].cat;
+    state.badAwards[i].pts=parseInt(row.querySelector('[data-field="pts"]').value)||1;
+  });
+  saveState();
+  const flash=$("#saveFlash");
+  flash.classList.add("show");
+  setTimeout(()=>flash.classList.remove("show"),2000);
+});
 
-  // handle award type buttons
-  $$("#awardTypeSeg button").forEach(b=>b.onclick=()=>setAwardType(b.dataset.type));
-
-  // save award
-  $("#saveAwardBtn").onclick=()=>{
-    const classId=$("#awardClass").value;
-    if(!classId){alert("Please select a class");return;}
-    if(!selBeh){alert("Please select behaviour");return;}
-    let pts=parseInt($("#awardPoints").value,10); if(isNaN(pts)||pts<0)pts=1;
-    const ts=getAwardTs();
-    state.records.push({
-      id:uid(),
-      studentId:awardStudentId,
-      classId,
-      type:awardType,
-      behaviour:selBeh.name,
-      category:selBeh.cat,
-      points:pts,
-      note:$("#awardNote").value.trim(),
-      ts:ts
-    });
-    save();renderRecent();$("#awardOverlay").classList.remove("open");
-  };
-
-  // Date & Time
-  $("#dtToggle").onclick=()=>{
-    const inp=$("#dtInputs");
-    inp.classList.toggle("open");
-    if(inp.classList.contains("open")){ setDtNow(); }
-  };
-  $("#dtNowBtn").onclick=()=>{ setDtNow(); };
-
-  function setDtNow(){
-    const now=new Date();
-    $("#awardDate").value=now.toISOString().slice(0,10);
-    $("#awardTime").value=now.toTimeString().slice(0,5);
-    updateDtDisplay();
-  }
-  $("#awardDate").onchange=updateDtDisplay;
-  $("#awardTime").onchange=updateDtDisplay;
-
-  function updateDtDisplay(){
-    const d=$("#awardDate").value,t=$("#awardTime").value;
-    if(d&&t){
-      const dt=new Date(d+"T"+t);
-      $("#dtDisplay").textContent=fmtDT(dt.getTime());
-    }
-  }
-  function getAwardTs(){
-    const d=$("#awardDate").value, t=$("#awardTime").value;
-    if(d&&t)return new Date(d+"T"+t).getTime();
-    return Date.now();
-  }
-
-  // set default award type
-  setAwardType("good");
-
-  // --- report functions ---
+/* ── REPORTS ── */
 $("#reportPeriod").addEventListener("change",()=>{
   const c=$("#reportPeriod").value==="custom";
   $("#fromWrap").style.display=c?"":"none";
   $("#toWrap").style.display=c?"":"none";
 });
 function renderReportStudents(){
-  const sel=$("#reportStudent");
-  sel.innerHTML='<option value="">All students</option>'+window.state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  const sel=$("#reportStudent"),cur=sel.value;
+  sel.innerHTML='<option value="">All students</option>'+state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");
+  sel.value=cur;
 }
 function getRange(){
-  const period=$("#reportPeriod").value;
-  const now=new Date();
+  const period=$("#reportPeriod").value,now=new Date();
   let from,to,label;
   if(period==="day"){
     from=new Date(now.getFullYear(),now.getMonth(),now.getDate());
@@ -557,56 +1015,77 @@ function getRange(){
     label="Today — "+fmtDate(from.getTime());
   }else if(period==="week"){
     to=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59,999);
-    from=new Date(to.getTime()-6*86400000);
-    from.setHours(0,0,0,0);
+    from=new Date(to.getTime()-6*86400000);from.setHours(0,0,0,0);
     label="Last 7 days — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
   }else if(period==="month"){
     to=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59,999);
-    from=new Date(to.getTime()-29*86400000);
-    from.setHours(0,0,0,0);
+    from=new Date(to.getTime()-29*86400000);from.setHours(0,0,0,0);
     label="Last 30 days — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
   }else{
     const f=$("#reportFrom").value,t=$("#reportTo").value;
     if(!f||!t)return null;
-    from=new Date(f+"T00:00:00");
-    to=new Date(t+"T23:59:59.999");
+    from=new Date(f+"T00:00:00");to=new Date(t+"T23:59:59.999");
     label="Custom — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
   }
   return{from:from.getTime(),to:to.getTime(),label};
 }
-$("#genReportBtn").onclick=()=>{
-  const range=getRange();
-  const area=$("#reportArea");
-  if(!range){area.innerHTML='<div class="empty-state">Choose date range</div>';return;}
-  let recs=window.state.records.filter(r=>r.ts>=range.from&&r.ts<=range.to);
+function generateReport(){
+  const range=getRange(),area=$("#reportArea");
+  if(!range){area.innerHTML='<div class="empty-state">Please choose both a start and end date.</div>';return;}
   const sf=$("#reportStudent").value;
+  let recs=state.records.filter(r=>r.ts>=range.from&&r.ts<=range.to);
   if(sf)recs=recs.filter(r=>r.studentId===sf);
   recs.sort((a,b)=>a.ts-b.ts);
-  // For simplicity, show total count
-  area.innerHTML=`<div>Total records: ${recs.length}</div>`;
+  const goodPts=recs.filter(r=>r.type==="good").reduce((a,r)=>a+r.points,0);
+  const badPts=recs.filter(r=>r.type==="bad").reduce((a,r)=>a+r.points,0);
+  const net=goodPts-badPts;
+  const sLabel=sf?(studentById(sf)?.name||""):"All students";
+  let h=`<div class="card"><p class="muted" style="font-size:12px;margin:0 0 14px"><strong>Period:</strong> ${esc(range.label)} &nbsp;·&nbsp; <strong>Student:</strong> ${esc(sLabel)} &nbsp;·&nbsp; <strong>Teacher:</strong> ${esc(TEACHER)} &nbsp;·&nbsp; <strong>Generated:</strong> ${fmtDT(Date.now())}</p>`;
+  h+=`<div class="rstat-row">
+    <div class="rstat"><div class="rn" style="color:var(--good)">${recs.filter(r=>r.type==="good").length}</div><div class="rl">Good (+${goodPts} pts)</div></div>
+    <div class="rstat"><div class="rn" style="color:var(--bad)">${recs.filter(r=>r.type==="bad").length}</div><div class="rl">Bad (−${badPts} pts)</div></div>
+    <div class="rstat"><div class="rn">${recs.length}</div><div class="rl">Total records</div></div>
+    <div class="rstat"><div class="rn" style="color:${net>=0?"var(--good)":"var(--bad)"}">${net>0?"+":""}${net}</div><div class="rl">Net points</div></div>
+  </div>`;
+  if(!recs.length){h+='<div class="empty-state">No records in this period.</div></div>';area.innerHTML=h;return;}
+  if(!sf){
+    const bs={};
+    recs.forEach(r=>{if(!bs[r.studentId])bs[r.studentId]={g:0,b:0,gp:0,bp:0};if(r.type==="good"){bs[r.studentId].g++;bs[r.studentId].gp+=r.points;}else{bs[r.studentId].b++;bs[r.studentId].bp+=r.points;}});
+    h+=`<div class="section-label">Student summary</div><div class="tbl-wrap"><table><thead><tr><th>Student</th><th class="tr">Good</th><th class="tr">Bad</th><th class="tr">Net pts</th></tr></thead><tbody>`;
+    Object.keys(bs).sort((a,b)=>(bs[b].gp-bs[b].bp)-(bs[a].gp-bs[a].bp)).forEach(sid=>{
+      const d=bs[sid],s=studentById(sid),n=d.gp-d.bp;
+      h+=`<tr><td><strong>${s?esc(s.name):"(deleted)"}</strong></td><td class="tr" style="color:var(--good)">${d.g}</td><td class="tr" style="color:var(--bad)">${d.b}</td><td class="tr"><span class="pts ${n>=0?"pos":"neg"}">${n>0?"+":""}${n}</span></td></tr>`;
+    });
+    h+="</tbody></table></div>";
+  }
+  h+=`<div class="section-label" style="margin-top:20px">${sf?esc(sLabel)+" records":"Detailed log"}</div>`;
+  h+=buildFeed(recs,false);
+  h+="</div>";
+  area.innerHTML=h;
 }
-$("#printReportBtn").onclick=()=>{
+$("#genReportBtn").addEventListener("click",generateReport);
+$("#printReportBtn").addEventListener("click",()=>{
   if(!$("#reportArea").innerHTML.trim()||$("#reportArea").querySelector(".empty-state"))generateReport();
   setTimeout(()=>window.print(),100);
-};
+});
 
+/* ── STATS ── */
 function renderStats(){
   const today=new Date();today.setHours(0,0,0,0);const ts=today.getTime();
-  $("#statStudents").textContent=window.state.students.length;
-  $("#statClasses").textContent=window.state.classes.length;
-  $("#statRecords").textContent=window.state.records.length;
-  $("#dStatStudents").textContent=window.state.students.length;
-  $("#dStatClasses").textContent=window.state.classes.length;
-  $("#dStatGood").textContent=window.state.records.filter(r=>r.type==="good"&&r.ts>=ts).length;
-  $("#dStatBad").textContent=window.state.records.filter(r=>r.type==="bad"&&r.ts>=ts).length;
+  $("#statStudents").textContent=state.students.length;
+  $("#statClasses").textContent=state.classes.length;
+  $("#statRecords").textContent=state.records.length;
+  $("#dStatStudents").textContent=state.students.length;
+  $("#dStatClasses").textContent=state.classes.length;
+  $("#dStatGood").textContent=state.records.filter(r=>r.type==="good"&&r.ts>=ts).length;
+  $("#dStatBad").textContent=state.records.filter(r=>r.type==="bad"&&r.ts>=ts).length;
 }
 function renderAll(){
   renderStats();renderClassPills();renderStudents();
-  renderQuickStudent();renderRecent();
+  renderQuickStudent();renderRecent();renderReportStudents();
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape")$$(".overlay").forEach(o=>o.classList.remove("open"));});
 renderAll();
-
 })();
 </script>
 </body>
