@@ -8,8 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-/* Your full original styles should go here. For brevity, assume the entire CSS you provided earlier is included. */
-/* Example snippet: */
+/* Your original CSS styles, including your provided styles... */
 :root {
   --brand:#1c54b2; --brand-dark:#1444a0; --brand-light:#e8f0fd;
   --good:#0a8a4e; --good-bg:#edfaf4; --good-border:#b3e6ce;
@@ -24,12 +23,12 @@
   --shadow:0 4px 12px rgba(20,40,80,.08),0 1px 3px rgba(20,40,80,.05);
   --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
 }
-/* All other styles go here, including your previous CSS */
+/* The rest of your styles... (copy all your styles here) */
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- Your existing header -->
 <div class="topbar">
   <div class="topbar-logo">
     <div class="mark">🎓</div>
@@ -51,13 +50,12 @@
   </div>
 </div>
 
-<!-- Main layout -->
-<div class="app-body" style="margin-top:60px; display:flex; height:calc(100vh - 60px);">
-
+<div class="app-body">
 <!-- Sidebar -->
 <aside class="sidebar">
   <div class="sidebar-section">Navigation</div>
   <button class="nav-item active" data-page="dashboard">
+    <!-- icon -->
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
     Dashboard
   </button>
@@ -75,12 +73,13 @@
   </button>
 </aside>
 
-<!-- Main Content -->
+<!-- Main content -->
 <div class="main" style="margin-left:250px; padding:20px; flex:1; overflow:auto;">
 
-  <!-- Dashboard Page -->
+  <!-- Dashboard -->
   <div class="page active" id="page-dashboard">
     <h1>Dashboard</h1>
+    <!-- Quick award -->
     <div style="margin-bottom:20px">
       <div style="display:flex; gap:10px; align-items:center;">
         <select id="quickStudent"></select>
@@ -88,12 +87,14 @@
         <button class="btn btn-bad" id="quickBad">👎 Bad</button>
       </div>
     </div>
+    <!-- Stats -->
     <div style="display:flex; gap:10px;">
       <div class="stat-card"><div class="sn" id="dStatStudents">0</div><div class="sl">Students</div></div>
       <div class="stat-card"><div class="sn" id="dStatClasses">0</div><div class="sl">Classes</div></div>
       <div class="stat-card"><div class="sn" id="dStatGood">0</div><div class="sl">Good today</div></div>
       <div class="stat-card"><div class="sn" id="dStatBad">0</div><div class="sl">Bad today</div></div>
     </div>
+    <!-- Recent activity -->
     <div class="card">
       <div class="card-title">Recent Activity</div>
       <div class="card-sub">Latest 15 behaviour records across all classes</div>
@@ -101,14 +102,16 @@
     </div>
   </div>
 
-  <!-- Students & Classes Page -->
+  <!-- Students -->
   <div class="page" id="page-students" style="display:none;">
     <h1>Students &amp; Classes</h1>
+    <!-- Classes -->
     <div style="margin-top:20px;">
       <div style="margin-bottom:10px;">
         <div style="font-weight:600;">Classes</div>
         <div class="pill-list" id="classPills"></div>
       </div>
+      <!-- Students -->
       <div>
         <div style="font-weight:600;">Students</div>
         <div id="studentsWrap"></div>
@@ -116,7 +119,7 @@
     </div>
   </div>
 
-  <!-- Reports Page -->
+  <!-- Reports -->
   <div class="page" id="page-reports" style="display:none;">
     <h1>Reports</h1>
     <div id="printHd"><h2>ClassTrack Behaviour Report — Mr J Leung</h2></div>
@@ -140,11 +143,11 @@
         <button class="btn btn-primary" id="genReportBtn">Generate</button>
         <button class="btn btn-ghost no-print" id="printReportBtn">🖨 Print / PDF</button>
       </div>
-      <div id="reportArea"></div>
+      <div id="reportArea" style="margin-top:20px;"></div>
     </div>
   </div>
 
-  <!-- Settings Page -->
+  <!-- Settings -->
   <div class="page" id="page-settings" style="display:none;">
     <h1>Award Settings</h1>
     <div style="margin-top:20px;">
@@ -179,11 +182,11 @@
 </div>
 </div>
 
-<!-- Award Modal: Updated Layout with large icon and style -->
+<!-- Updated Award Modal Layout with design and functions (new style) -->
 <div class="overlay" id="awardOverlay">
-  <div class="modal" style="max-width: 600px; text-align: center; padding: 20px;">
+  <div class="modal" style="max-width:600px; text-align:center; padding:20px;">
     <!-- Header -->
-    <div class="modal-hd" style="justify-content: center; position:relative;">
+    <div class="modal-hd" style="justify-content:center; position:relative;">
       <h3 id="awardTitle" style="margin:0;">Record Behaviour</h3>
       <button class="close-x" data-close>&times;</button>
     </div>
@@ -192,18 +195,18 @@
       
       <!-- Student Name -->
       <h2 id="awardStudentName" style="margin-bottom:10px;font-weight:600;"></h2>
-      
+
       <!-- Award Icon & Name -->
-      <div class="award-display">🏆</div>
+      <div class="award-display" style="font-size:40px; margin:20px 0 10px;">🏆</div>
       <div id="awardNameDisplay" style="font-size:20px; font-weight:700; margin-bottom:10px;"></div>
       <div style="font-size:14px; color:var(--ink-light); margin-bottom:20px;">Awarded by Mr J Leung in Class</div>
-      
-      <!-- Behaviour selection -->
+
+      <!-- Select Behaviour -->
       <div style="margin-bottom:15px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Select Behaviour</div>
         <div class="beh-grid" id="behaviourGrid" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"></div>
       </div>
-      
+
       <!-- Date & Time -->
       <div style="margin-top:15px;">
         <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Date &amp; Time</div>
@@ -225,21 +228,20 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Points -->
       <div style="margin-top:15px;">
         <label style="display:block; font-size:11px; font-weight:600; text-align:center;">Points</label>
         <input type="number" id="awardPoints" value="1" step="1" style="width:80px; margin:auto; display:block; padding:7px; border:1.5px solid var(--line); border-radius:6px;">
       </div>
-      
+
       <!-- Note -->
       <div style="margin-top:15px;">
         <label style="display:block; font-size:11px; font-weight:600; text-align:center;">Note (optional)</label>
         <textarea id="awardNote" placeholder="Add any extra detail…" style="width:100%; padding:7px; border:1.5px solid var(--line); border-radius:6px; min-height:60px; resize:vertical;"></textarea>
       </div>
-
     </div>
-    <!-- Footer buttons -->
+    <!-- Footer -->
     <div class="modal-ft" style="display:flex; justify-content:center; gap:10px; padding-top:10px;">
       <button class="btn btn-ghost" data-close style="margin-right:10px;">Cancel</button>
       <button class="btn btn-primary" id="saveAwardBtn">Save</button>
@@ -265,7 +267,7 @@
   </div>
 </div>
 
-<!-- Your existing scripts, with updates for award modal -->
+<!-- Your scripts, updated for new modal layout -->
 <script>
 (function() {
   "use strict";
@@ -320,11 +322,11 @@
       const recs=state.records.filter(r=>r.studentId===s.id);
       const net=recs.reduce((a,r)=>a+(r.type==="good"?r.points:-r.points),0);
       h+=`<tr>
-        <td><strong>${escs(s.name)}</strong></td>
+        <td><strong>${esc(s.name)}</strong></td>
         <td><div class="pill-list">${cls}</div></td>
-        <td class="tr muted">${recs.length}</td>
-        <td class="tr"><span class="pts ${net>=0?"pos":"neg"}">${net>0?"+":""}${net}</span></td>
-        <td class="tr" style="white-space:nowrap;">
+        <td class="muted">${recs.length}</td>
+        <td class="muted"><span class="pts ${net>=0?"pos":"neg"}">${net>0?"+":""}${net}</span></td>
+        <td style="white-space:nowrap;">
           <button class="btn btn-ghost btn-sm" data-manage="${s.id}">Manage</button>
           <button class="btn btn-danger btn-sm" data-del="${s.id}">Delete</button>
         </td>
@@ -450,9 +452,6 @@
 
     $("#awardPoints").value=1;
     $("#awardNote").value="";
-    $("#awardOverlay").classList.add("open");
-    // Set behaviour buttons based on type
-    setAwardType(type);
   }
 
   // set award type and behaviour buttons
@@ -481,14 +480,14 @@
     });
   }
 
-  // handle award type button clicks
+  // handle award type buttons
   $$("#awardTypeSeg button").forEach(b=>b.onclick=()=>setAwardType(b.dataset.type));
 
-  // Save the award record
+  // save award
   $("#saveAwardBtn").onclick=()=>{
     const classId=$("#awardClass").value;
-    if(!classId){alert("Select class");return;}
-    if(!selBeh){alert("Select behaviour");return;}
+    if(!classId){alert("Please select a class");return;}
+    if(!selBeh){alert("Please select behaviour");return;}
     let pts=parseInt($("#awardPoints").value,10); if(isNaN(pts)||pts<0)pts=1;
     const ts=getAwardTs();
     state.records.push({
@@ -505,7 +504,7 @@
     save();renderRecent();$("#awardOverlay").classList.remove("open");
   };
 
-  // Date & Time controls
+  // Date & Time
   $("#dtToggle").onclick=()=>{
     const inp=$("#dtInputs");
     inp.classList.toggle("open");
@@ -519,6 +518,8 @@
     $("#awardTime").value=now.toTimeString().slice(0,5);
     updateDtDisplay();
   }
+  $("#awardDate").onchange=updateDtDisplay;
+  $("#awardTime").onchange=updateDtDisplay;
 
   function updateDtDisplay(){
     const d=$("#awardDate").value,t=$("#awardTime").value;
@@ -527,91 +528,85 @@
       $("#dtDisplay").textContent=fmtDT(dt.getTime());
     }
   }
-
   function getAwardTs(){
     const d=$("#awardDate").value, t=$("#awardTime").value;
     if(d&&t)return new Date(d+"T"+t).getTime();
     return Date.now();
   }
 
-  // set default type
+  // set default award type
   setAwardType("good");
 
-  // Generate report
-  $("#reportPeriod").addEventListener("change",()=>{
-    const c=$("#reportPeriod").value==="custom";
-    $("#fromWrap").style.display=c?"":"none";
-    $("#toWrap").style.display=c?"":"none";
-  });
-  function renderReportStudents(){
-    const sel=$("#reportStudent");
-    sel.innerHTML='<option value="">All students</option>'+window.state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  // --- report functions ---
+$("#reportPeriod").addEventListener("change",()=>{
+  const c=$("#reportPeriod").value==="custom";
+  $("#fromWrap").style.display=c?"":"none";
+  $("#toWrap").style.display=c?"":"none";
+});
+function renderReportStudents(){
+  const sel=$("#reportStudent");
+  sel.innerHTML='<option value="">All students</option>'+window.state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+}
+function getRange(){
+  const period=$("#reportPeriod").value;
+  const now=new Date();
+  let from,to,label;
+  if(period==="day"){
+    from=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    to=new Date(from.getTime()+86400000-1);
+    label="Today — "+fmtDate(from.getTime());
+  }else if(period==="week"){
+    to=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59,999);
+    from=new Date(to.getTime()-6*86400000);
+    from.setHours(0,0,0,0);
+    label="Last 7 days — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
+  }else if(period==="month"){
+    to=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59,999);
+    from=new Date(to.getTime()-29*86400000);
+    from.setHours(0,0,0,0);
+    label="Last 30 days — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
+  }else{
+    const f=$("#reportFrom").value,t=$("#reportTo").value;
+    if(!f||!t)return null;
+    from=new Date(f+"T00:00:00");
+    to=new Date(t+"T23:59:59.999");
+    label="Custom — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
   }
-  function getRange(){
-    const period=$("#reportPeriod").value;
-    const now=new Date();
-    let from,to,label;
-    if(period==="day"){
-      from=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-      to=new Date(from.getTime()+86400000-1);
-      label="Today — "+fmtDate(from.getTime());
-    }else if(period==="week"){
-      to=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59,999);
-      from=new Date(to.getTime()-6*86400000);
-      from.setHours(0,0,0,0);
-      label="Last 7 days — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
-    }else if(period==="month"){
-      to=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59,999);
-      from=new Date(to.getTime()-29*86400000);
-      from.setHours(0,0,0,0);
-      label="Last 30 days — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
-    }else{
-      const f=$("#reportFrom").value,t=$("#reportTo").value;
-      if(!f||!t)return null;
-      from=new Date(f+"T00:00:00");
-      to=new Date(t+"T23:59:59.999");
-      label="Custom — "+fmtDate(from.getTime())+" to "+fmtDate(to.getTime());
-    }
-    return{from:from.getTime(),to:to.getTime(),label};
-  }
-  $("#genReportBtn").onclick=()=>{
-    const range=getRange();
-    const area=$("#reportArea");
-    if(!range){area.innerHTML='<div class="empty-state">Choose date range</div>';return;}
-    let recs=window.state.records.filter(r=>r.ts>=range.from&&r.ts<=range.to);
-    const sf=$("#reportStudent").value;
-    if(sf)recs=recs.filter(r=>r.studentId===sf);
-    recs.sort((a,b)=>a.ts-b.ts);
-    // generate report content (you can expand this)
-    area.innerHTML=`<div>Total records: ${recs.length}</div>`;
-  };
-  $("#printReportBtn").onclick=()=>{
-    if(!$("#reportArea").innerHTML.trim()||$("#reportArea").querySelector(".empty-state"))generateReport();
-    setTimeout(()=>window.print(),100);
-  };
+  return{from:from.getTime(),to:to.getTime(),label};
+}
+$("#genReportBtn").onclick=()=>{
+  const range=getRange();
+  const area=$("#reportArea");
+  if(!range){area.innerHTML='<div class="empty-state">Choose date range</div>';return;}
+  let recs=window.state.records.filter(r=>r.ts>=range.from&&r.ts<=range.to);
+  const sf=$("#reportStudent").value;
+  if(sf)recs=recs.filter(r=>r.studentId===sf);
+  recs.sort((a,b)=>a.ts-b.ts);
+  // For simplicity, show total count
+  area.innerHTML=`<div>Total records: ${recs.length}</div>`;
+}
+$("#printReportBtn").onclick=()=>{
+  if(!$("#reportArea").innerHTML.trim()||$("#reportArea").querySelector(".empty-state"))generateReport();
+  setTimeout(()=>window.print(),100);
+};
 
-  // Render stats, initialize page
-  function renderAll() {
-    // update stats
-    const today=new Date(); today.setHours(0,0,0,0);
-    const ts=today.getTime();
-    $("#statStudents").textContent=window.state.students.length;
-    $("#statClasses").textContent=window.state.classes.length;
-    $("#statRecords").textContent=window.state.records.length;
-    $("#dStatStudents").textContent=window.state.students.length;
-    $("#dStatClasses").textContent=window.state.classes.length;
-    $("#dStatGood").textContent=window.state.records.filter(r=>r.type==="good"&&r.ts>=ts).length;
-    $("#dStatBad").textContent=window.state.records.filter(r=>r.type==="bad"&&r.ts>=ts).length;
-    // render class pills, students, recent
-    renderClassPills();
-    renderStudents();
-    renderRecent();
-    renderReportStudents();
-    setDtNow();
-  }
+function renderStats(){
+  const today=new Date();today.setHours(0,0,0,0);const ts=today.getTime();
+  $("#statStudents").textContent=window.state.students.length;
+  $("#statClasses").textContent=window.state.classes.length;
+  $("#statRecords").textContent=window.state.records.length;
+  $("#dStatStudents").textContent=window.state.students.length;
+  $("#dStatClasses").textContent=window.state.classes.length;
+  $("#dStatGood").textContent=window.state.records.filter(r=>r.type==="good"&&r.ts>=ts).length;
+  $("#dStatBad").textContent=window.state.records.filter(r=>r.type==="bad"&&r.ts>=ts).length;
+}
+function renderAll(){
+  renderStats();renderClassPills();renderStudents();
+  renderQuickStudent();renderRecent();
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$$(".overlay").forEach(o=>o.classList.remove("open"));});
+renderAll();
 
-  // --- Initialize ---
-  window.addEventListener("load", ()=>{renderAll();});
 })();
 </script>
 </body>
