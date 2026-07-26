@@ -5,23 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClassTrack</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Sora:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --brand:#2563eb;--brand-dark:#1d4ed8;--brand-light:#eff6ff;--brand-mid:#dbeafe;
-  --good:#16a34a;--good-bg:#f0fdf4;--good-border:#bbf7d0;--good-mid:#dcfce7;
-  --bad:#dc2626;--bad-bg:#fef2f2;--bad-border:#fecaca;--bad-mid:#fee2e2;
-  --warn:#d97706;--warn-bg:#fffbeb;
-  --canvas:#f8fafc;--surface:#ffffff;--surface-2:#f1f5f9;--surface-3:#e8edf4;
-  --ink:#0f172a;--ink-mid:#475569;--ink-soft:#64748b;--ink-light:#94a3b8;--ink-xlight:#cbd5e1;
-  --line:#e2e8f0;--line-strong:#cbd5e1;
-  --sidebar-w:248px;--topbar-h:56px;
-  --r:6px;--r-lg:10px;--r-xl:14px;
-  --shadow-xs:0 1px 2px rgba(15,23,42,.06);
-  --shadow-sm:0 1px 3px rgba(15,23,42,.08),0 1px 2px rgba(15,23,42,.05);
-  --shadow:0 4px 16px rgba(15,23,42,.08),0 1px 4px rgba(15,23,42,.04);
-  --shadow-lg:0 10px 40px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);
+  --brand:#4338ca;--brand-dark:#372da3;--brand-light:#eef0fd;--brand-mid:#dcdff8;
+  --good:#15803d;--good-bg:#f0fdf4;--good-border:#bbf7d0;--good-mid:#dcfce7;
+  --bad:#be123c;--bad-bg:#fef1f4;--bad-border:#fecdd8;--bad-mid:#fde3ea;
+  --warn:#b45309;--warn-bg:#fffbeb;--warn-border:#fde68a;
+  --canvas:#f5f6fb;--surface:#ffffff;--surface-2:#f0f1f8;--surface-3:#e5e7f3;
+  --ink:#12142b;--ink-mid:#454869;--ink-soft:#5c5f80;--ink-light:#8b8eaa;--ink-xlight:#c9cbe0;
+  --line:#e3e4f1;--line-strong:#cbcde3;
+  --sidebar-w:252px;--topbar-h:58px;
+  --r:7px;--r-lg:11px;--r-xl:15px;
+  --shadow-xs:0 1px 2px rgba(18,20,43,.06);
+  --shadow-sm:0 1px 3px rgba(18,20,43,.09),0 1px 2px rgba(18,20,43,.05);
+  --shadow:0 4px 18px rgba(18,20,43,.09),0 1px 4px rgba(18,20,43,.05);
+  --shadow-lg:0 12px 44px rgba(18,20,43,.14),0 2px 8px rgba(18,20,43,.06);
   --font:'Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Sora',var(--font);
+  --font-serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
@@ -39,19 +42,39 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
   border-right:1px solid var(--line);
 }
 .topbar-logo .mark{
-  width:32px;height:32px;
-  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
-  border-radius:8px;display:grid;place-items:center;
-  font-size:15px;flex-shrink:0;
-  box-shadow:0 2px 6px rgba(37,99,235,.3);
+  width:33px;height:33px;
+  background:linear-gradient(135deg,#4338ca 0%,#6d5bea 100%);
+  border-radius:9px;display:grid;place-items:center;
+  font-size:15px;flex-shrink:0;color:#fff;
+  box-shadow:0 2px 7px rgba(67,56,202,.35);
 }
-.topbar-logo .wordmark{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.4px}
-.topbar-logo .sub{font-size:10px;color:var(--ink-light);font-weight:500;letter-spacing:.4px;text-transform:uppercase;margin-top:1px}
+.topbar-logo .wordmark{font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.4px}
+.topbar-logo .sub{font-size:10px;color:var(--ink-light);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:1px}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .topbar-stat{display:flex;flex-direction:column;align-items:center;padding:0 16px;border-right:1px solid var(--line)}
 .topbar-stat:last-of-type{border-right:none}
-.topbar-stat .n{font-size:16px;font-weight:800;color:var(--ink);line-height:1}
-.topbar-stat .l{font-size:10px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.topbar-stat .n{font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--ink);line-height:1}
+.topbar-stat .l{font-size:10px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;font-weight:600}
+
+/* sync pill */
+.sync-pill{
+  display:flex;align-items:center;gap:7px;
+  font:600 12px/1 var(--font);color:var(--ink-soft);
+  background:var(--surface-2);border:1px solid var(--line);
+  border-radius:999px;padding:6px 12px;margin-left:6px;
+  cursor:pointer;user-select:none;transition:background .12s,border-color .12s;
+  white-space:nowrap;
+}
+.sync-pill:hover{background:var(--surface-3)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--ink-xlight);flex-shrink:0}
+.sync-pill.state-loading .sync-dot,.sync-pill.state-pending .sync-dot{background:var(--warn)}
+.sync-pill.state-saving .sync-dot{background:var(--brand);animation:syncpulse 1s ease-in-out infinite}
+.sync-pill.state-synced .sync-dot{background:var(--good)}
+.sync-pill.state-local .sync-dot{background:var(--ink-light)}
+.sync-pill.state-error .sync-dot{background:var(--bad)}
+.sync-pill.state-error{color:var(--bad);border-color:var(--bad-border);background:var(--bad-bg)}
+@keyframes syncpulse{0%,100%{opacity:1}50%{opacity:.3}}
+
 .teacher-pill{
   display:flex;align-items:center;gap:8px;
   background:var(--surface-2);border:1px solid var(--line);
@@ -60,8 +83,8 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
 }
 .teacher-av{
   width:26px;height:26px;border-radius:50%;
-  background:linear-gradient(135deg,#2563eb,#60a5fa);
-  display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#4338ca,#8b7ef0);
+  display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;font-family:var(--font-display);
 }
 .teacher-pill span{font-size:13px;font-weight:600;color:var(--ink)}
 
@@ -87,7 +110,7 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
   border:0;background:none;width:calc(100% - 16px);text-align:left;
 }
 .nav-item:hover{background:var(--surface-2);color:var(--ink)}
-.nav-item.active{background:var(--brand-light);color:var(--brand);font-weight:600}
+.nav-item.active{background:var(--brand-light);color:var(--brand);font-weight:700}
 .nav-item svg{flex-shrink:0}
 .nav-item.active svg{opacity:1}
 .sidebar-divider{height:1px;background:var(--line);margin:12px 16px}
@@ -101,7 +124,7 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
   background:#fff;color:var(--ink);width:100%;outline:none;
   transition:border-color .15s;margin-bottom:6px;
 }
-.sidebar-add input:focus,.sidebar-add select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.sidebar-add input:focus,.sidebar-add select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(67,56,202,.1)}
 .sa-btn{
   width:100%;font:600 12px/1 var(--font);
   background:var(--brand);color:#fff;
@@ -112,6 +135,12 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
 .sa-btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand-mid)}
 .sa-btn.ghost:hover{background:var(--brand-light)}
 
+.sidebar-footnote{
+  margin:auto 10px 0;padding:10px 12px;
+  font-size:11px;color:var(--ink-light);line-height:1.5;
+  border-top:1px solid var(--line);padding-top:14px;
+}
+
 /* ─ MAIN ─ */
 .main{margin-left:var(--sidebar-w);flex:1;padding:24px 28px;min-width:0;max-width:1100px}
 .page{display:none}
@@ -119,7 +148,7 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
 
 /* ─ PAGE HEADER ─ */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
-.page-header h1{font-size:19px;font-weight:800;letter-spacing:-.5px;color:var(--ink);line-height:1.2}
+.page-header h1{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--ink);line-height:1.2}
 .page-header p{font-size:13px;color:var(--ink-soft);margin-top:3px;font-weight:400}
 
 /* ─ CARDS ─ */
@@ -134,8 +163,8 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
   border-radius:var(--r-xl);padding:16px 18px;
   box-shadow:var(--shadow-xs);
 }
-.stat-card .sn{font-size:28px;font-weight:800;line-height:1;letter-spacing:-.5px}
-.stat-card .sl{font-size:12px;color:var(--ink-soft);margin-top:5px;font-weight:500}
+.stat-card .sn{font-family:var(--font-mono);font-size:27px;font-weight:700;line-height:1;letter-spacing:-.5px}
+.stat-card .sl{font-size:12px;color:var(--ink-soft);margin-top:6px;font-weight:500}
 
 /* ─ QUICK BAR ─ */
 .quick-bar{
@@ -150,7 +179,7 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
   background:var(--surface-2);color:var(--ink);min-width:200px;outline:none;
   transition:border-color .15s;
 }
-.quick-bar select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.quick-bar select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(67,56,202,.1)}
 .quick-bar-label{font-size:12px;font-weight:600;color:var(--ink-soft);margin-right:4px}
 .quick-bar-btns{display:flex;gap:8px;margin-left:auto}
 
@@ -161,14 +190,15 @@ html,body{height:100%;font-family:var(--font);background:var(--canvas);color:var
   display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
 }
 .btn:active{transform:scale(.98)}
-.btn-primary{background:var(--brand);color:#fff;box-shadow:0 1px 3px rgba(37,99,235,.25)}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 1px 3px rgba(67,56,202,.3)}
 .btn-primary:hover{background:var(--brand-dark)}
 .btn-ghost{background:var(--surface-2);color:var(--ink-mid);border:1px solid var(--line)}
 .btn-ghost:hover{background:var(--surface-3);color:var(--ink)}
-.btn-good{background:var(--good);color:#fff;box-shadow:0 1px 3px rgba(22,163,74,.25)}
-.btn-good:hover{background:#15803d}
-.btn-bad{background:var(--bad);color:#fff;box-shadow:0 1px 3px rgba(220,38,38,.25)}
-.btn-bad:hover{background:#b91c1c}
+.btn-good{background:var(--good);color:#fff;box-shadow:0 1px 3px rgba(21,128,61,.25)}
+.btn-good:hover{background:#116530}
+.btn-bad{background:var(--bad);color:#fff;box-shadow:0 1px 3px rgba(190,18,60,.25)}
+.btn-bad:hover{background:#9f0e30}
 .btn-danger{background:transparent;color:var(--bad);border:1px solid var(--bad-border)}
 .btn-danger:hover{background:var(--bad-bg)}
 .btn-sm{padding:5px 10px;font-size:12px;border-radius:5px}
@@ -182,7 +212,7 @@ input,select,textarea{
   background:var(--surface-2);color:var(--ink);min-width:160px;outline:none;
   transition:border-color .15s,box-shadow .15s;
 }
-input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.08);background:#fff}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(67,56,202,.1);background:#fff}
 input[disabled]{background:var(--surface-2);color:var(--ink-mid);cursor:default;opacity:.7}
 textarea{min-height:68px;resize:vertical;width:100%}
 
@@ -193,14 +223,23 @@ thead{background:var(--surface-2)}
 th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--line);white-space:nowrap}
 td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:0}
-tbody tr:hover td{background:#fafbff}
+tbody tr:hover td{background:#fafaff}
 .tr{text-align:right}
+
+/* ─ AVATAR ─ */
+.avatar-circle{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  border-radius:50%;color:#fff;font-weight:700;font-family:var(--font-display);
+  letter-spacing:-.2px;
+}
+.name-row{display:flex;align-items:center;gap:9px}
 
 /* ─ CHIPS & BADGES ─ */
 .chip{display:inline-flex;align-items:center;gap:4px;background:var(--surface-2);color:var(--ink-mid);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:600;border:1px solid var(--line)}
 .badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:700}
 .badge.good{background:var(--good-bg);color:var(--good);border:1px solid var(--good-border)}
 .badge.bad{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad-border)}
+.pts{font-family:var(--font-mono)}
 .pts.pos{color:var(--good);font-weight:700}
 .pts.neg{color:var(--bad);font-weight:700}
 .muted{color:var(--ink-light)}
@@ -209,26 +248,24 @@ tbody tr:hover td{background:#fafbff}
 .empty-state svg{margin-bottom:10px;opacity:.25}
 
 /* ═══════════════════════════════════════
-   CLASSTRACK ACTIVITY FEED (ClassCharts style)
+   CLASSTRACK ACTIVITY FEED
    ═══════════════════════════════════════ */
 
 .feed-wrap{display:flex;flex-direction:column}
 
-/* Date group header */
 .feed-date-header{
   display:flex;align-items:center;gap:12px;
   padding:14px 0 8px;
 }
 .feed-date-header:first-child{padding-top:0}
 .feed-date-text{
-  font-size:13px;font-weight:700;color:var(--brand);
-  white-space:nowrap;
+  font-size:12.5px;font-weight:700;color:var(--brand);
+  white-space:nowrap;text-transform:uppercase;letter-spacing:.4px;
 }
 .feed-date-line{
   flex:1;height:1px;background:var(--line);
 }
 
-/* Individual feed row */
 .feed-row{
   display:flex;align-items:center;gap:0;
   background:var(--surface);
@@ -240,28 +277,26 @@ tbody tr:hover td{background:#fafbff}
 }
 .feed-row:hover{box-shadow:var(--shadow-sm);border-color:var(--line-strong)}
 
-/* Left coloured stripe */
 .feed-stripe{
   width:4px;flex-shrink:0;align-self:stretch;
 }
 .feed-row.feed-good .feed-stripe{background:var(--good)}
 .feed-row.feed-bad .feed-stripe{background:var(--bad)}
 
-/* Points badge */
 .feed-pts-badge{
   flex-shrink:0;
   width:42px;height:42px;
   border-radius:50%;
   display:grid;place-items:center;
-  font-size:13px;font-weight:800;
+  font-family:var(--font-mono);
+  font-size:13px;font-weight:700;
   margin:0 14px 0 16px;
 }
 .feed-row.feed-good .feed-pts-badge{background:var(--good-mid);color:var(--good)}
 .feed-row.feed-bad .feed-pts-badge{background:var(--bad-mid);color:var(--bad)}
 
-/* Content */
 .feed-content{flex:1;min-width:0;padding:12px 0}
-.feed-student{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.feed-student{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
 .feed-detail{font-size:12.5px;color:var(--ink-soft)}
 .feed-detail strong{color:var(--ink-mid);font-weight:600}
 .feed-meta-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
@@ -270,17 +305,15 @@ tbody tr:hover td{background:#fafbff}
   font-size:11px;font-weight:600;padding:2px 8px;
   border-radius:4px;
 }
-.feed-tag.class-tag{background:#f0f4ff;color:#3b5fce;border:1px solid #dde7ff}
+.feed-tag.class-tag{background:#eef0fd;color:#4338ca;border:1px solid #dee0f9}
 .feed-tag.cat-tag{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line)}
 
-/* Time */
 .feed-time{
   font-size:12px;color:var(--ink-light);font-weight:500;
   padding:0 16px 0 12px;flex-shrink:0;
-  white-space:nowrap;
+  white-space:nowrap;font-family:var(--font-mono);
 }
 
-/* Delete btn */
 .feed-del{
   padding:0 12px;flex-shrink:0;
 }
@@ -312,10 +345,10 @@ tbody tr:hover td{background:#fafbff}
 .b-opt.selected{border-color:var(--brand);background:var(--brand-light);color:var(--brand)}
 .b-opt.bad-opt:hover{border-color:var(--bad);background:var(--bad-bg)}
 .b-opt.bad-opt.selected{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
-.b-opt .b-pts{font-size:11px;font-weight:700;opacity:.6}
+.b-opt .b-pts{font-size:11px;font-weight:700;opacity:.6;font-family:var(--font-mono)}
 
 /* ─ MODAL ─ */
-.overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+.overlay{position:fixed;inset:0;background:rgba(18,20,43,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
 .overlay.open{display:flex}
 .modal{background:#fff;border-radius:var(--r-xl);max-width:520px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden;animation:mfade .18s ease}
 @keyframes mfade{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
@@ -339,22 +372,52 @@ tbody tr:hover td{background:#fafbff}
 .award-row{display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid var(--line)}
 .award-row:last-child{border-bottom:0}
 .award-name-inp{flex:1;min-width:0;font:500 13px/1.4 var(--font);padding:7px 9px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface-2);color:var(--ink);outline:none;transition:border-color .15s}
-.award-name-inp:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
-.award-pts-inp{width:56px;min-width:0;font:700 13px/1.4 var(--font);padding:7px 8px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface-2);color:var(--ink);text-align:center;outline:none}
+.award-name-inp:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(67,56,202,.1)}
+.award-pts-inp{width:56px;min-width:0;font:700 13px/1.4 var(--font-mono);padding:7px 8px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface-2);color:var(--ink);text-align:center;outline:none}
 .award-pts-inp:focus{border-color:var(--brand);background:#fff}
 .award-section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .award-section-hd span{font-size:13px;font-weight:700;color:var(--ink)}
 .save-flash{display:inline-block;font-size:12px;font-weight:600;color:var(--good);opacity:0;transition:opacity .3s;margin-left:10px}
 .save-flash.show{opacity:1}
 
-/* ─ REPORTS ─ */
+/* ─ REPORTS (screen controls) ─ */
 .report-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-.rstat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.rstat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:14px 16px}
-.rstat .rn{font-size:24px;font-weight:800;line-height:1}
-.rstat .rl{font-size:12px;color:var(--ink-light);margin-top:3px}
 .section-label{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 10px}
 .section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ─ REPORT DOCUMENT (screen preview + print) ─ */
+.report-doc-shell{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-xs);padding:34px 38px;margin-bottom:16px}
+.report-doc{font-family:var(--font-serif);color:#15172c}
+.report-letterhead{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;border-bottom:3px solid var(--ink);padding-bottom:16px;margin-bottom:20px}
+.report-brand{display:flex;align-items:center;gap:12px}
+.report-mark{width:46px;height:46px;border-radius:11px;background:linear-gradient(135deg,#4338ca,#8b7ef0);display:grid;place-items:center;font-size:21px;color:#fff;flex-shrink:0}
+.report-brand-name{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--ink)}
+.report-brand-sub{font-family:var(--font);font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.7px;margin-top:2px;font-weight:600}
+.report-meta-box{border:1px solid var(--line-strong);border-radius:9px;padding:11px 15px;font-family:var(--font);font-size:11.5px;min-width:240px}
+.report-meta-box .rm-row{display:flex;justify-content:space-between;gap:16px;padding:3px 0}
+.report-meta-box .rm-row span{color:var(--ink-light)}
+.report-meta-box .rm-row strong{color:var(--ink);font-weight:700}
+
+.report-scorebox{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.rs-cell{border:1px solid var(--line);border-radius:9px;padding:13px 14px;text-align:center;background:var(--canvas)}
+.rs-cell .rs-n{font-family:var(--font-mono);font-size:24px;font-weight:700}
+.rs-cell .rs-l{font-size:10.5px;color:var(--ink-soft);margin-top:5px;font-family:var(--font);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+
+.report-summary-table,.report-log-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:20px}
+.report-summary-table th,.report-log-table th{text-align:left;background:var(--surface-2);font-family:var(--font);font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft);padding:8px 10px;border-bottom:2px solid var(--ink-xlight);font-weight:700}
+.report-summary-table td,.report-log-table td{padding:8px 10px;border-bottom:1px solid var(--line)}
+.report-summary-table tbody tr:nth-child(even) td,.report-log-table tbody tr:nth-child(even) td{background:#fafafd}
+
+.report-student-section{margin-top:6px;margin-bottom:28px}
+.report-student-section h3{font-family:var(--font-display);font-size:16px;font-weight:700;border-left:4px solid var(--brand);padding-left:11px;margin-bottom:6px;display:flex;align-items:center;gap:9px}
+.report-student-stats{font-size:11.5px;color:var(--ink-soft);padding-left:15px;margin-bottom:11px;font-family:var(--font);font-weight:500}
+
+.report-sig-block{display:flex;gap:60px;margin-top:44px;padding-top:18px;border-top:1px solid var(--line)}
+.sig-line{flex:1}
+.sig-line .sig-rule{border-bottom:1px solid var(--ink);height:36px}
+.sig-line span{font-size:10.5px;color:var(--ink-soft);font-family:var(--font)}
+
+.report-footnote{margin-top:24px;font-size:10.5px;color:var(--ink-light);font-style:italic;font-family:var(--font)}
 
 /* ─ MANAGE ─ */
 .manage-class-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);cursor:pointer}
@@ -378,7 +441,7 @@ tbody tr:hover td{background:#fafbff}
 .login-hd{
   padding:28px 28px 20px;
   border-bottom:1px solid var(--line);
-  background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);
+  background:linear-gradient(135deg,#312a86 0%,#4338ca 100%);
   text-align:center;
 }
 .login-hd .login-mark{
@@ -388,8 +451,8 @@ tbody tr:hover td{background:#fafbff}
   font-size:24px;margin:0 auto 12px;
   box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
-.login-hd h2{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px}
-.login-hd p{font-size:12px;color:rgba(255,255,255,.65);font-weight:400}
+.login-hd h2{font-family:var(--font-display);font-size:19px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px}
+.login-hd p{font-size:12px;color:rgba(255,255,255,.7);font-weight:400}
 .login-bd{padding:24px 28px 28px;display:flex;flex-direction:column;gap:14px}
 .login-bd .field label{color:var(--ink-soft)}
 .login-bd input{width:100%;min-width:0;background:var(--surface-2)}
@@ -404,10 +467,18 @@ tbody tr:hover td{background:#fafbff}
   background:var(--brand);color:#fff;
   border:0;border-radius:var(--r);padding:11px;cursor:pointer;
   transition:background .15s;
-  box-shadow:0 2px 6px rgba(37,99,235,.25);
+  box-shadow:0 2px 6px rgba(67,56,202,.3);
+  display:flex;align-items:center;justify-content:center;gap:8px;
 }
 .login-submit:hover{background:var(--brand-dark)}
-.login-hint{font-size:11.5px;color:var(--ink-light);text-align:center;margin-top:2px}
+.login-submit:disabled{opacity:.6;cursor:default}
+.login-hint{font-size:11.5px;color:var(--ink-light);text-align:center;margin-top:2px;line-height:1.5}
+.spinner{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.4);border-top-color:#fff;
+  animation:spin .7s linear infinite;flex-shrink:0;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* logout + change-pw in topbar */
 .topbar-logout{
@@ -420,13 +491,19 @@ tbody tr:hover td{background:#fafbff}
 .topbar-logout:hover{background:var(--bad-bg);color:var(--bad);border-color:var(--bad-border)}
 
 /* change-pw modal */
-.chpw-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:150;padding:16px}
+.chpw-overlay{position:fixed;inset:0;background:rgba(18,20,43,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:150;padding:16px}
 .chpw-overlay.open{display:flex}
 
 /* ─ PRINT ─ */
-@media print{.topbar,.sidebar,.no-print,.overlay{display:none!important}body{background:#fff}.main{margin-left:0;padding:0}.card{box-shadow:none;border:0}#printHd{display:block!important}}
-#printHd{display:none;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
-#printHd h2{margin:0;font-size:20px}
+@media print{
+  .topbar,.sidebar,.no-print,.overlay,.chpw-overlay{display:none!important}
+  body{background:#fff}
+  .main{margin-left:0;padding:0;max-width:none}
+  .report-doc-shell{box-shadow:none;border:0;padding:0;margin:0}
+  .report-student-section{page-break-inside:avoid}
+  .report-student-section.pagebreak{page-break-before:always}
+  @page{margin:16mm 14mm}
+}
 
 @media(max-width:800px){
   .sidebar{display:none}
@@ -434,6 +511,10 @@ tbody tr:hover td{background:#fafbff}
   .stat-row,.rstat-row{grid-template-columns:repeat(2,1fr)}
   .awards-grid{grid-template-columns:1fr}
   .beh-grid{grid-template-columns:1fr}
+  .report-doc-shell{padding:20px}
+  .report-letterhead{flex-direction:column}
+  .topbar-stat{display:none}
+  .sync-pill span:not(.sync-dot){display:none}
 }
 </style>
 </head>
@@ -457,7 +538,8 @@ tbody tr:hover td{background:#fafbff}
         <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password">
       </div>
       <div class="login-error" id="loginError">Incorrect username or password.</div>
-      <button class="login-submit" id="loginBtn">Sign in</button>
+      <button class="login-submit" id="loginBtn" disabled><span class="spinner" id="loginSpinner"></span><span id="loginBtnText">Connecting…</span></button>
+      <p class="login-hint">Your classes, students and records sync automatically across every device you sign in on.</p>
     </div>
   </div>
 </div>
@@ -475,6 +557,9 @@ tbody tr:hover td{background:#fafbff}
     <div class="topbar-stat"><div class="n" id="statStudents">0</div><div class="l">Students</div></div>
     <div class="topbar-stat"><div class="n" id="statClasses">0</div><div class="l">Classes</div></div>
     <div class="topbar-stat"><div class="n" id="statRecords">0</div><div class="l">Records</div></div>
+    <div class="sync-pill state-loading" id="syncPill" title="Click to sync now">
+      <span class="sync-dot"></span><span id="syncText">Connecting…</span>
+    </div>
     <div class="teacher-pill">
       <div class="teacher-av">JL</div>
       <span>Mr J Leung</span>
@@ -525,6 +610,10 @@ tbody tr:hover td{background:#fafbff}
     <div class="sa-title">Add Class</div>
     <input id="sbClassName" placeholder="Class name…">
     <button class="sa-btn ghost" id="sbAddClass">+ Add Class</button>
+  </div>
+
+  <div class="sidebar-footnote">
+    <span id="sidebarSyncNote">All changes save automatically and sync to your other devices.</span>
   </div>
 </aside>
 
@@ -586,9 +675,8 @@ tbody tr:hover td{background:#fafbff}
   <!-- ═══ REPORTS ═══ -->
   <div class="page" id="page-reports">
     <div class="page-header">
-      <div><h1>Reports</h1><p>Generate and export behaviour reports</p></div>
+      <div><h1>Reports</h1><p>Generate a formatted behaviour report ready to print or export as a PDF</p></div>
     </div>
-    <div id="printHd"><h2>ClassTrack Behaviour Report — Mr J Leung</h2></div>
     <div class="card no-print">
       <div class="report-controls">
         <div class="field">
@@ -609,7 +697,7 @@ tbody tr:hover td{background:#fafbff}
         <button class="btn btn-primary" id="genReportBtn">Generate report</button>
         <button class="btn btn-ghost no-print" id="printReportBtn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Print / PDF
+          Print / Save PDF
         </button>
       </div>
     </div>
@@ -756,35 +844,69 @@ tbody tr:hover td{background:#fafbff}
 <script>
 (function(){
 "use strict";
-const STORE_KEY="classtrack.v4";
+const STORE_KEY="classtrack.v4";        // localStorage fallback key for app data
+const AUTH_KEY="classtrack.auth";       // localStorage fallback key for credentials
+const SESSION_KEY="classtrack.session"; // per-device session flag (not synced, on purpose)
+const REMOTE_DATA_KEY="classtrack:data";
+const REMOTE_AUTH_KEY="classtrack:auth";
 const TEACHER="Mr J Leung";
 
-/* ══════════════════════════════════════
-   AUTH
-   ══════════════════════════════════════ */
-const AUTH_KEY="classtrack.auth";
-const SESSION_KEY="classtrack.session";
+const HAS_STORAGE = (typeof window!=="undefined" && !!window.storage && typeof window.storage.get==="function");
 
-function getCredentials(){
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+
+/* ══════════════════════════════════════
+   REMOTE STORAGE (cross-device sync)
+   ══════════════════════════════════════
+   Data is written to the artifact's persistent, shared key/value store
+   (window.storage) so it is available from any device the teacher signs
+   in on. If that store is unavailable for any reason, everything falls
+   back to this browser's localStorage so the app keeps working locally. */
+
+const SYNC_LABELS={
+  loading:"Connecting…",
+  pending:"Unsaved changes",
+  saving:"Saving…",
+  synced:"Synced",
+  local:"Local only — not synced",
+  error:"Sync failed · tap to retry"
+};
+function setSyncStatus(status){
+  const pill=$("#syncPill");
+  if(!pill)return;
+  pill.className="sync-pill state-"+status;
+  const t=$("#syncText");
+  if(t)t.textContent=SYNC_LABELS[status]||status;
+  pill.title = status==="error" ? "Sync failed — click to retry"
+    : status==="local" ? "Cloud sync isn't available here — data is only stored on this device"
+    : "Click to pull the latest data from your other devices";
+}
+
+let creds={username:"jleung",password:"classdarts"};
+async function initAuth(){
   try{
-    const s=localStorage.getItem(AUTH_KEY);
-    if(s)return JSON.parse(s);
-  }catch(e){}
-  return{username:"jleung",password:"classdarts"};
+    if(HAS_STORAGE){
+      const res=await window.storage.get(REMOTE_AUTH_KEY,true);
+      if(res&&res.value){creds=JSON.parse(res.value);return;}
+      await window.storage.set(REMOTE_AUTH_KEY,JSON.stringify(creds),true);
+    }else{
+      const r=localStorage.getItem(AUTH_KEY);
+      if(r)creds=JSON.parse(r);
+      else localStorage.setItem(AUTH_KEY,JSON.stringify(creds));
+    }
+  }catch(e){ /* keep in-memory defaults; app still usable this session */ }
 }
-function saveCredentials(creds){
-  localStorage.setItem(AUTH_KEY,JSON.stringify(creds));
+function getCredentials(){return creds;}
+async function saveCredentials(next){
+  creds=next;
+  if(HAS_STORAGE)await window.storage.set(REMOTE_AUTH_KEY,JSON.stringify(creds),true);
+  else localStorage.setItem(AUTH_KEY,JSON.stringify(creds));
 }
-function isLoggedIn(){
-  return sessionStorage.getItem(SESSION_KEY)==="1";
-}
-function doLogin(user,pass){
-  const creds=getCredentials();
-  return user===creds.username&&pass===creds.password;
-}
-function showApp(){
-  document.getElementById("loginScreen").classList.add("hidden");
-}
+function isLoggedIn(){return sessionStorage.getItem(SESSION_KEY)==="1";}
+function doLogin(user,pass){return user===creds.username&&pass===creds.password;}
+function showApp(){document.getElementById("loginScreen").classList.add("hidden");}
 function showLogin(){
   sessionStorage.removeItem(SESSION_KEY);
   document.getElementById("loginScreen").classList.remove("hidden");
@@ -792,61 +914,6 @@ function showLogin(){
   document.getElementById("loginPass").value="";
   document.getElementById("loginError").classList.remove("show");
 }
-
-// Login form
-document.getElementById("loginBtn").addEventListener("click",()=>{
-  const u=document.getElementById("loginUser").value.trim();
-  const p=document.getElementById("loginPass").value;
-  if(doLogin(u,p)){
-    sessionStorage.setItem(SESSION_KEY,"1");
-    showApp();
-  }else{
-    document.getElementById("loginError").classList.add("show");
-    document.getElementById("loginPass").value="";
-    document.getElementById("loginPass").focus();
-  }
-});
-["loginUser","loginPass"].forEach(id=>{
-  document.getElementById(id).addEventListener("keydown",e=>{
-    if(e.key==="Enter")document.getElementById("loginBtn").click();
-  });
-});
-
-// Logout
-document.getElementById("logoutBtn").addEventListener("click",()=>{
-  if(confirm("Sign out of ClassTrack?"))showLogin();
-});
-
-// Change password
-document.getElementById("changePwBtn").addEventListener("click",()=>{
-  document.getElementById("chpwCurrent").value="";
-  document.getElementById("chpwNew").value="";
-  document.getElementById("chpwConfirm").value="";
-  document.getElementById("chpwError").classList.remove("show");
-  document.getElementById("chpwOverlay").classList.add("open");
-});
-document.getElementById("chpwClose").addEventListener("click",()=>document.getElementById("chpwOverlay").classList.remove("open"));
-document.getElementById("chpwCancelBtn").addEventListener("click",()=>document.getElementById("chpwOverlay").classList.remove("open"));
-document.getElementById("chpwSaveBtn").addEventListener("click",()=>{
-  const cur=document.getElementById("chpwCurrent").value;
-  const nw=document.getElementById("chpwNew").value;
-  const conf=document.getElementById("chpwConfirm").value;
-  const errEl=document.getElementById("chpwError");
-  const creds=getCredentials();
-  errEl.classList.remove("show");
-  if(cur!==creds.password){errEl.textContent="Current password is incorrect.";errEl.classList.add("show");return;}
-  if(nw.length<4){errEl.textContent="New password must be at least 4 characters.";errEl.classList.add("show");return;}
-  if(nw!==conf){errEl.textContent="Passwords do not match.";errEl.classList.add("show");return;}
-  saveCredentials({username:creds.username,password:nw});
-  document.getElementById("chpwOverlay").classList.remove("open");
-  alert("Password updated successfully.");
-});
-
-// Boot — check session
-if(isLoggedIn()){
-  showApp();
-}
-// else login screen is visible by default
 
 const DEFAULT_GOOD=[
   {name:"Helping others",    cat:"Leadership",      pts:1},
@@ -869,21 +936,144 @@ const DEFAULT_BAD=[
   {name:"Not listening",     cat:"Engagement",      pts:1},
 ];
 
-function loadState(){
-  try{const r=localStorage.getItem(STORE_KEY);if(r)return JSON.parse(r);}catch(e){}
-  return{students:[],classes:[],records:[],seq:1,goodAwards:[...DEFAULT_GOOD],badAwards:[...DEFAULT_BAD]};
-}
-function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){alert("Save failed: "+e.message);}}
-let state=loadState();
-if(!state.goodAwards)state.goodAwards=[...DEFAULT_GOOD];
-if(!state.badAwards)state.badAwards=[...DEFAULT_BAD];
+let state=null;
 
-const $=s=>document.querySelector(s);
-const $$=s=>Array.from(document.querySelectorAll(s));
-const uid=()=>"id"+(state.seq++)+"-"+Math.random().toString(36).slice(2,7);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+async function initState(){
+  let loaded=null;
+  try{
+    if(HAS_STORAGE){
+      const res=await window.storage.get(REMOTE_DATA_KEY,true);
+      if(res&&res.value)loaded=JSON.parse(res.value);
+    }else{
+      const r=localStorage.getItem(STORE_KEY);
+      if(r)loaded=JSON.parse(r);
+    }
+  }catch(e){loaded=null;}
+  state=loaded||{students:[],classes:[],records:[],seq:1,goodAwards:[...DEFAULT_GOOD],badAwards:[...DEFAULT_BAD]};
+  if(!state.goodAwards)state.goodAwards=[...DEFAULT_GOOD];
+  if(!state.badAwards)state.badAwards=[...DEFAULT_BAD];
+  if(!loaded)await flushSave();
+}
+
+let saveTimer=null,dirty=false;
+function saveState(){
+  dirty=true;
+  setSyncStatus("pending");
+  if(saveTimer)clearTimeout(saveTimer);
+  saveTimer=setTimeout(flushSave,700);
+}
+async function flushSave(){
+  setSyncStatus("saving");
+  try{
+    const payload=JSON.stringify(state);
+    if(HAS_STORAGE)await window.storage.set(REMOTE_DATA_KEY,payload,true);
+    else localStorage.setItem(STORE_KEY,payload);
+    dirty=false;
+    setSyncStatus(HAS_STORAGE?"synced":"local");
+  }catch(e){
+    setSyncStatus("error");
+  }
+}
+async function manualPull(){
+  setSyncStatus("saving");
+  try{
+    if(HAS_STORAGE){
+      const res=await window.storage.get(REMOTE_DATA_KEY,true);
+      if(res&&res.value){
+        state=JSON.parse(res.value);
+        if(!state.goodAwards)state.goodAwards=[...DEFAULT_GOOD];
+        if(!state.badAwards)state.badAwards=[...DEFAULT_BAD];
+        renderAll();
+      }
+    }
+    setSyncStatus(HAS_STORAGE?"synced":"local");
+  }catch(e){
+    setSyncStatus("error");
+  }
+}
+$("#syncPill").addEventListener("click",()=>{
+  if(!state)return;
+  if($("#syncPill").className.includes("error"))flushSave();
+  else manualPull();
+});
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden&&isLoggedIn()&&state)manualPull();
+});
+window.addEventListener("focus",()=>{
+  if(isLoggedIn()&&state)manualPull();
+});
+
+/* ── LOGIN FORM ── */
+document.getElementById("loginBtn").addEventListener("click",()=>{
+  if(document.getElementById("loginBtn").disabled)return;
+  const u=document.getElementById("loginUser").value.trim();
+  const p=document.getElementById("loginPass").value;
+  if(doLogin(u,p)){
+    sessionStorage.setItem(SESSION_KEY,"1");
+    showApp();
+    renderAll();
+  }else{
+    document.getElementById("loginError").classList.add("show");
+    document.getElementById("loginPass").value="";
+    document.getElementById("loginPass").focus();
+  }
+});
+["loginUser","loginPass"].forEach(id=>{
+  document.getElementById(id).addEventListener("keydown",e=>{
+    if(e.key==="Enter")document.getElementById("loginBtn").click();
+  });
+});
+
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  if(confirm("Sign out of ClassTrack?"))showLogin();
+});
+
+document.getElementById("changePwBtn").addEventListener("click",()=>{
+  document.getElementById("chpwCurrent").value="";
+  document.getElementById("chpwNew").value="";
+  document.getElementById("chpwConfirm").value="";
+  document.getElementById("chpwError").classList.remove("show");
+  document.getElementById("chpwOverlay").classList.add("open");
+});
+document.getElementById("chpwClose").addEventListener("click",()=>document.getElementById("chpwOverlay").classList.remove("open"));
+document.getElementById("chpwCancelBtn").addEventListener("click",()=>document.getElementById("chpwOverlay").classList.remove("open"));
+document.getElementById("chpwSaveBtn").addEventListener("click",async()=>{
+  const cur=document.getElementById("chpwCurrent").value;
+  const nw=document.getElementById("chpwNew").value;
+  const conf=document.getElementById("chpwConfirm").value;
+  const errEl=document.getElementById("chpwError");
+  const current=getCredentials();
+  errEl.classList.remove("show");
+  if(cur!==current.password){errEl.textContent="Current password is incorrect.";errEl.classList.add("show");return;}
+  if(nw.length<4){errEl.textContent="New password must be at least 4 characters.";errEl.classList.add("show");return;}
+  if(nw!==conf){errEl.textContent="Passwords do not match.";errEl.classList.add("show");return;}
+  try{
+    await saveCredentials({username:current.username,password:nw});
+    document.getElementById("chpwOverlay").classList.remove("open");
+    alert("Password updated successfully."+(HAS_STORAGE?" It will sync to your other devices.":""));
+  }catch(e){
+    errEl.textContent="Couldn't save the new password — check your connection and try again.";
+    errEl.classList.add("show");
+  }
+});
+
+/* ── AVATARS ── */
+const AVATAR_PALETTE=["#4338ca","#0e7490","#b45309","#be123c","#15803d","#7c3aed","#0369a1","#a16207"];
+function avatarColor(name){
+  let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))>>>0;
+  return AVATAR_PALETTE[h%AVATAR_PALETTE.length];
+}
+function initials(name){
+  return name.trim().split(/\s+/).map(w=>w[0]||"").slice(0,2).join("").toUpperCase()||"?";
+}
+function avatarHTML(name,size){
+  size=size||26;
+  return `<span class="avatar-circle" style="width:${size}px;height:${size}px;font-size:${Math.max(10,Math.round(size*0.4))}px;background:${avatarColor(name)}">${esc(initials(name))}</span>`;
+}
+
 const classById=id=>state.classes.find(c=>c.id===id);
 const studentById=id=>state.students.find(s=>s.id===id);
+const uid=()=>"id"+(state.seq++)+"-"+Math.random().toString(36).slice(2,7);
 function fmtDT(ts){
   const d=new Date(ts);
   return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})
@@ -974,7 +1164,7 @@ function renderStudents(){
     const recs=state.records.filter(r=>r.studentId===s.id);
     const net=recs.reduce((a,r)=>a+(r.type==="good"?r.points:-r.points),0);
     h+=`<tr>
-      <td><strong>${esc(s.name)}</strong></td>
+      <td><div class="name-row">${avatarHTML(s.name,26)}<strong>${esc(s.name)}</strong></div></td>
       <td><div class="pill-list">${cls}</div></td>
       <td class="tr muted">${recs.length}</td>
       <td class="tr"><span class="pts ${net>0?"pos":net<0?"neg":""}">${net>0?"+":""}${net}</span></td>
@@ -1025,12 +1215,11 @@ $("#quickGood").addEventListener("click",()=>openAward($("#quickStudent").value,
 $("#quickBad").addEventListener("click",()=>openAward($("#quickStudent").value,"bad"));
 
 /* ══════════════════════════════════════
-   ACTIVITY FEED (ClassCharts style)
+   ACTIVITY FEED
    ══════════════════════════════════════ */
 function buildFeed(records, showDel=true){
   if(!records.length)return '<div class="empty-state">No records yet. Record a behaviour above.</div>';
 
-  // Group by calendar date
   const sorted=[...records].sort((a,b)=>b.ts-a.ts);
   const groups={};
   const groupOrder=[];
@@ -1056,7 +1245,7 @@ function buildFeed(records, showDel=true){
         <div class="feed-stripe"></div>
         <div class="feed-pts-badge">${pts}</div>
         <div class="feed-content">
-          <div class="feed-student">${s?esc(s.name):"(deleted student)"}</div>
+          <div class="feed-student">${avatarHTML(s?s.name:"?",22)}${s?esc(s.name):"(deleted student)"}</div>
           <div class="feed-detail"><strong>${esc(r.behaviour)}</strong> awarded by ${esc(TEACHER)} in ${c?esc(c.name):"Unknown class"}.</div>
           <div class="feed-meta-tags">
             <span class="feed-tag class-tag">📚 ${c?esc(c.name):"?"}</span>
@@ -1239,44 +1428,107 @@ function getRange(){
   }
   return{from:from.getTime(),to:to.getTime(),label};
 }
+
+/* Build a formal, printable report document (letterhead, score summary,
+   per-student log tables, signature block) — this is what both the
+   on-screen preview and the printed / PDF output use, so what the
+   teacher sees is exactly what gets printed. */
+function reportSigBlock(){
+  return `<div class="report-sig-block">
+      <div class="sig-line"><div class="sig-rule"></div><span>Teacher signature</span></div>
+      <div class="sig-line"><div class="sig-rule"></div><span>Date</span></div>
+    </div>
+    <p class="report-footnote">Generated automatically by ClassTrack on ${fmtDT(Date.now())}. This report reflects behaviour records logged at the time of generation and may not include entries added afterwards.</p>`;
+}
+function buildReportDoc(range,sf,recs){
+  const sLabel=sf?(studentById(sf)?studentById(sf).name:"Unknown student"):"All students";
+  const goodPts=recs.filter(r=>r.type==="good").reduce((a,r)=>a+r.points,0);
+  const badPts=recs.filter(r=>r.type==="bad").reduce((a,r)=>a+r.points,0);
+  const net=goodPts-badPts;
+
+  let h=`<div class="report-doc" id="reportDoc">
+    <div class="report-letterhead">
+      <div class="report-brand">
+        <div class="report-mark">🎓</div>
+        <div>
+          <div class="report-brand-name">ClassTrack</div>
+          <div class="report-brand-sub">Student Behaviour Report</div>
+        </div>
+      </div>
+      <div class="report-meta-box">
+        <div class="rm-row"><span>Prepared by</span><strong>${esc(TEACHER)}</strong></div>
+        <div class="rm-row"><span>Period</span><strong>${esc(range.label)}</strong></div>
+        <div class="rm-row"><span>Student(s)</span><strong>${esc(sLabel)}</strong></div>
+        <div class="rm-row"><span>Generated</span><strong>${fmtDT(Date.now())}</strong></div>
+      </div>
+    </div>
+    <div class="report-scorebox">
+      <div class="rs-cell"><div class="rs-n" style="color:var(--good)">${recs.filter(r=>r.type==="good").length}</div><div class="rs-l">Good records (+${goodPts})</div></div>
+      <div class="rs-cell"><div class="rs-n" style="color:var(--bad)">${recs.filter(r=>r.type==="bad").length}</div><div class="rs-l">Bad records (&minus;${badPts})</div></div>
+      <div class="rs-cell"><div class="rs-n">${recs.length}</div><div class="rs-l">Total records</div></div>
+      <div class="rs-cell"><div class="rs-n" style="color:${net>=0?"var(--good)":"var(--bad)"}">${net>0?"+":""}${net}</div><div class="rs-l">Net points</div></div>
+    </div>`;
+
+  if(!recs.length){
+    h+='<div class="empty-state">No behaviour records were found for this period.</div>';
+    h+=reportSigBlock();
+    h+="</div>";
+    return h;
+  }
+
+  let studentIds;
+  if(sf){
+    studentIds=[sf];
+  }else{
+    const bs={};
+    recs.forEach(r=>{
+      if(!bs[r.studentId])bs[r.studentId]={g:0,b:0,gp:0,bp:0};
+      if(r.type==="good"){bs[r.studentId].g++;bs[r.studentId].gp+=r.points;}
+      else{bs[r.studentId].b++;bs[r.studentId].bp+=r.points;}
+    });
+    studentIds=Object.keys(bs).sort((a,b)=>(bs[b].gp-bs[b].bp)-(bs[a].gp-bs[a].bp));
+    h+=`<div class="section-label" style="margin:0 0 10px">Class summary</div>
+    <table class="report-summary-table"><thead><tr><th>Student</th><th>Good</th><th>Bad</th><th>Net points</th></tr></thead><tbody>`;
+    studentIds.forEach(sid=>{
+      const d=bs[sid],s=studentById(sid),n=d.gp-d.bp;
+      h+=`<tr><td><div class="name-row">${avatarHTML(s?s.name:"?",18)}${esc(s?s.name:"(deleted)")}</div></td><td style="color:var(--good)">${d.g}</td><td style="color:var(--bad)">${d.b}</td><td><span class="pts ${n>=0?"pos":"neg"}">${n>0?"+":""}${n}</span></td></tr>`;
+    });
+    h+="</tbody></table>";
+  }
+
+  studentIds.forEach((sid,idx)=>{
+    const s=studentById(sid);
+    const srecs=recs.filter(r=>r.studentId===sid).sort((a,b)=>a.ts-b.ts);
+    const g=srecs.filter(r=>r.type==="good"),b=srecs.filter(r=>r.type==="bad");
+    const gp=g.reduce((a,r)=>a+r.points,0),bp=b.reduce((a,r)=>a+r.points,0);
+    h+=`<div class="report-student-section ${idx>0?"pagebreak":""}">
+      <h3>${avatarHTML(s?s.name:"?",26)}${esc(s?s.name:"(deleted student)")}</h3>
+      <div class="report-student-stats">${g.length} good (+${gp}) &nbsp;·&nbsp; ${b.length} bad (&minus;${bp}) &nbsp;·&nbsp; Net ${gp-bp>0?"+":""}${gp-bp}</div>
+      <table class="report-log-table"><thead><tr><th>Date</th><th>Time</th><th>Class</th><th>Category</th><th>Behaviour</th><th>Points</th><th>Note</th></tr></thead><tbody>`;
+    srecs.forEach(r=>{
+      const c=classById(r.classId);
+      h+=`<tr><td>${fmtDate(r.ts)}</td><td>${fmtTime(r.ts)}</td><td>${c?esc(c.name):"—"}</td><td>${esc(r.category||"General")}</td><td>${esc(r.behaviour)}</td><td class="pts ${r.type==="good"?"pos":"neg"}">${r.type==="good"?"+":"-"}${r.points}</td><td>${r.note?esc(r.note):"—"}</td></tr>`;
+    });
+    h+="</tbody></table></div>";
+  });
+
+  h+=reportSigBlock();
+  h+="</div>";
+  return h;
+}
 function generateReport(){
   const range=getRange(),area=$("#reportArea");
-  if(!range){area.innerHTML='<div class="empty-state">Please choose both a start and end date.</div>';return;}
+  if(!range){area.innerHTML='<div class="card no-print"><div class="empty-state">Please choose both a start and end date.</div></div>';return;}
   const sf=$("#reportStudent").value;
   let recs=state.records.filter(r=>r.ts>=range.from&&r.ts<=range.to);
   if(sf)recs=recs.filter(r=>r.studentId===sf);
   recs.sort((a,b)=>a.ts-b.ts);
-  const goodPts=recs.filter(r=>r.type==="good").reduce((a,r)=>a+r.points,0);
-  const badPts=recs.filter(r=>r.type==="bad").reduce((a,r)=>a+r.points,0);
-  const net=goodPts-badPts;
-  const sLabel=sf?(studentById(sf)?.name||""):"All students";
-  let h=`<div class="card"><p class="muted" style="font-size:12px;margin:0 0 14px"><strong>Period:</strong> ${esc(range.label)} &nbsp;·&nbsp; <strong>Student:</strong> ${esc(sLabel)} &nbsp;·&nbsp; <strong>Teacher:</strong> ${esc(TEACHER)} &nbsp;·&nbsp; <strong>Generated:</strong> ${fmtDT(Date.now())}</p>`;
-  h+=`<div class="rstat-row">
-    <div class="rstat"><div class="rn" style="color:var(--good)">${recs.filter(r=>r.type==="good").length}</div><div class="rl">Good (+${goodPts} pts)</div></div>
-    <div class="rstat"><div class="rn" style="color:var(--bad)">${recs.filter(r=>r.type==="bad").length}</div><div class="rl">Bad (−${badPts} pts)</div></div>
-    <div class="rstat"><div class="rn">${recs.length}</div><div class="rl">Total records</div></div>
-    <div class="rstat"><div class="rn" style="color:${net>=0?"var(--good)":"var(--bad)"}">${net>0?"+":""}${net}</div><div class="rl">Net points</div></div>
-  </div>`;
-  if(!recs.length){h+='<div class="empty-state">No records in this period.</div></div>';area.innerHTML=h;return;}
-  if(!sf){
-    const bs={};
-    recs.forEach(r=>{if(!bs[r.studentId])bs[r.studentId]={g:0,b:0,gp:0,bp:0};if(r.type==="good"){bs[r.studentId].g++;bs[r.studentId].gp+=r.points;}else{bs[r.studentId].b++;bs[r.studentId].bp+=r.points;}});
-    h+=`<div class="section-label">Student summary</div><div class="tbl-wrap"><table><thead><tr><th>Student</th><th class="tr">Good</th><th class="tr">Bad</th><th class="tr">Net pts</th></tr></thead><tbody>`;
-    Object.keys(bs).sort((a,b)=>(bs[b].gp-bs[b].bp)-(bs[a].gp-bs[a].bp)).forEach(sid=>{
-      const d=bs[sid],s=studentById(sid),n=d.gp-d.bp;
-      h+=`<tr><td><strong>${s?esc(s.name):"(deleted)"}</strong></td><td class="tr" style="color:var(--good)">${d.g}</td><td class="tr" style="color:var(--bad)">${d.b}</td><td class="tr"><span class="pts ${n>=0?"pos":"neg"}">${n>0?"+":""}${n}</span></td></tr>`;
-    });
-    h+="</tbody></table></div>";
-  }
-  h+=`<div class="section-label" style="margin-top:20px">${sf?esc(sLabel)+" records":"Detailed log"}</div>`;
-  h+=buildFeed(recs,false);
-  h+="</div>";
-  area.innerHTML=h;
+  area.innerHTML=`<div class="report-doc-shell">${buildReportDoc(range,sf,recs)}</div>`;
 }
 $("#genReportBtn").addEventListener("click",generateReport);
 $("#printReportBtn").addEventListener("click",()=>{
-  if(!$("#reportArea").innerHTML.trim()||$("#reportArea").querySelector(".empty-state"))generateReport();
-  setTimeout(()=>window.print(),100);
+  generateReport();
+  setTimeout(()=>window.print(),80);
 });
 
 /* ── STATS ── */
@@ -1291,11 +1543,29 @@ function renderStats(){
   $("#dStatBad").textContent=state.records.filter(r=>r.type==="bad"&&r.ts>=ts).length;
 }
 function renderAll(){
+  if(!state)return;
   renderStats();renderClassPills();renderStudents();
   renderQuickStudent();renderRecent();renderReportStudents();
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape")$$(".overlay").forEach(o=>o.classList.remove("open"));});
-renderAll();
+
+/* ── BOOT ── */
+async function main(){
+  setSyncStatus("loading");
+  await Promise.all([initAuth(),initState()]);
+  const btn=$("#loginBtn");
+  btn.disabled=false;
+  $("#loginSpinner").style.display="none";
+  $("#loginBtnText").textContent="Sign in";
+  setSyncStatus(HAS_STORAGE?"synced":"local");
+  if(!HAS_STORAGE){
+    $("#sidebarSyncNote").textContent="Cloud sync isn't available in this environment — your changes are saved to this device only.";
+  }
+  if(isLoggedIn())showApp();
+  renderAll();
+}
+main();
+
 })();
 </script>
 </body>
