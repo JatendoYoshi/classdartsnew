@@ -65,6 +65,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .hd input{font-weight:700;font-size:1.1rem}
 details summary{cursor:pointer;font-weight:700}
 @media (max-width:760px){.nl{grid-template-columns:1fr}.side{flex-direction:row;flex-wrap:wrap}}
+.setup{display:grid;gap:20px}
+.sec h2{font-size:1rem;margin:0 0 10px}
+.seg{display:inline-flex;border:2px solid var(--soft);border-radius:8px;overflow:hidden}
+.seg button{background:none;border:0;padding:9px 20px;cursor:pointer;font-weight:700;color:var(--mute)}
+.seg button[aria-pressed="true"]{background:var(--hi);color:var(--hi-ink)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{color:var(--mute);font-size:.9rem}
+.fld select{width:100%}
+.sum{background:var(--bg);border-radius:6px;padding:9px 12px;margin:12px 0 0}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.dlg .fields{grid-template-columns:1fr;margin-bottom:12px}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--hi);color:var(--hi-ink);border-radius:8px;padding:10px 14px;margin-bottom:16px}
+.banner .btn{background:var(--hi-ink);color:#fff}
+.need td:nth-child(4) select{border-color:var(--hi);box-shadow:0 0 0 2px var(--hi)}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -79,15 +94,25 @@ details summary{cursor:pointer;font-weight:700}
 
 <section id="bracket">
   <div class="panel">
-    <div class="toolbar">
-      <label for="tbMode">Players</label>
-      <select id="tbMode"><option value="8">8</option><option value="16">16</option></select>
-      <label for="tbCls">Random fill from</label>
-      <select id="tbCls"></select>
-      <select id="tbRole" aria-label="Role"><option value="student">Students</option><option value="teacher">Teachers</option><option value="any">Everyone</option></select>
-      <button class="btn" id="fillAll">Fill empty slots</button>
-      <button class="btn ghost" id="resetWin">Reset winners</button>
-      <button class="btn ghost" id="clearAll">Clear all</button>
+    <div class="setup">
+      <div class="sec"><h2>Bracket size</h2>
+        <div class="seg" role="group" aria-label="Bracket size"><button data-m="8">8 players</button><button data-m="16">16 players</button></div>
+      </div>
+      <div class="sec"><h2>Who can be picked</h2>
+        <div class="fields">
+          <div class="fld"><label for="tbCls">Class</label><select id="tbCls"></select></div>
+          <div class="fld"><label for="tbRole">Role</label><select id="tbRole"><option value="student">Students</option><option value="teacher">Teachers</option><option value="any">Everyone</option></select></div>
+          <div class="fld"><label for="tbGen">Gender</label><select id="tbGen"><option value="any">Boys and girls</option><option value="m">Boys only</option><option value="f">Girls only</option></select></div>
+        </div>
+        <p class="sum" id="sum" role="status"></p>
+      </div>
+      <div class="sec"><h2>Fill the bracket</h2>
+        <div class="acts">
+          <button class="btn" id="fillAll">Fill empty slots at random</button>
+          <button class="btn ghost" id="resetWin">Reset winners</button>
+          <button class="btn ghost" id="clearAll">Clear all names</button>
+        </div>
+      </div>
     </div>
     <p class="msg" id="msg" role="status"></p>
   </div>
@@ -113,6 +138,34 @@ function KK(){return S.mode===16?4:3;}
 function initRd(){var K=KK();S.rd=[null];for(var k=1;k<K;k++)S.rd.push(Array(S.mode>>k).fill(""));S.champ="";}
 function R(k){return k===0?S.slots:S.rd[k];}
 
+var MALE=("james john robert michael william david richard joseph thomas charles christopher daniel matthew anthony mark donald steven paul andrew joshua kenneth kevin brian george timothy ronald edward jason jeffrey ryan jacob gary nicholas eric jonathan stephen larry justin scott brandon benjamin samuel gregory alexander patrick frank raymond jack dennis jerry tyler aaron adam nathan henry zachary douglas peter noah ethan jeremy walter christian keith roger austin sean gerald carl harold dylan arthur lawrence bryan billy bruce gabriel joe logan albert alan juan wayne elijah roy vincent ralph eugene russell bobby mason philip louis callum connor cameron liam lewis euan fraser ross angus hamish murray craig stuart kieran finlay rory ewan struan lachlan dougie archie oscar harry jake ben tom oliver leo max freddie alfie theo isaac luke mohammed muhammad ahmed omar hassan hamza yusuf zain ibrahim reece innes calum darren gavin grant neil alasdair iain ian colin kenny dean mohammad aiden caleb ollie andy mike dave steve jim bob rob matt nick josh dan danny tommy johnny fergus alistair alasdair duncan callan cole ciaran declan dominic jay josh lucas mateo nathaniel owen ryan seth tobias toby will xavier zak").split(" "),
+FEMALE=("mary patricia jennifer linda elizabeth barbara susan jessica sarah karen lisa nancy betty margaret sandra kimberly emily donna michelle carol amanda dorothy melissa deborah stephanie rebecca sharon laura cynthia kathleen amy angela shirley anna brenda pamela emma nicole helen samantha katherine christine debra rachel carolyn janet catherine maria heather diane olivia julie joyce victoria ruth virginia lauren christina joan evelyn judith megan andrea cheryl hannah jacqueline martha gloria teresa ann sara madison frances kathryn janice jean abigail alice judy sophia grace denise amber doris marilyn danielle beverly isabella theresa diana natalie brittany charlotte marie kayla alexis lori chloe eilidh isla ailsa kirsty fiona morag shona catriona mhairi mairi rhona skye ellie amelia ava mia lily poppy freya daisy ruby evie holly lucy molly rosie zoe leah niamh aoife erin orla sophie lola layla aisha fatima zainab maryam amira eva ella imogen georgia millie florence matilda summer bethany caitlin kaitlyn lexi paige abbie abby ciara demi gemma kirstin kirsten laura jenna jodie leanne carly chelsea courtney hayley nadia nina rosa rose sienna tilly willow yasmin zara").split(" "),
+NEUT=("alex sam jamie charlie taylor jordan casey robin morgan riley jesse kai ashley avery billie frankie leslie lindsay lindsey jody kerry blair rowan drew quinn bailey jayden skyler reese hayden ash chris terry pat kim lee shannon sidney sydney tracy stacey dana jan jo mel nicky sasha devon carey kelly ali jess").split(" ");
+function guess(name){
+  var w=String(name||"").trim().split(/[\s\-]+/)[0].toLowerCase();
+  try{w=w.normalize("NFD").replace(/[\u0300-\u036f]/g,"");}catch(e){}
+  if(!w||NEUT.indexOf(w)>=0)return "";
+  var m=MALE.indexOf(w)>=0,f=FEMALE.indexOf(w)>=0;
+  return m&&!f?"m":f&&!m?"f":"";
+}
+function askGender(list){
+  list=list.filter(function(p){return p.g==="";});
+  if(!list.length)return;
+  var idx=0;
+  function next(){idx++;step();}
+  function step(){
+    if(idx>=list.length){closeModal();renderSide();renderMain();return;}
+    var p=list[idx];
+    showModal('<h2>Boy or girl?</h2><p>I can’t tell from “'+esc(p.name)+'”. It may be gender-neutral or a name I don’t know. Which should it be?</p>'+
+      '<div class="plist"><button class="chip" data-g="m">Boy</button><button class="chip" data-g="f">Girl</button></div>'+
+      '<p class="msg">'+(idx+1)+' of '+list.length+'</p>'+
+      '<div class="foot"><button class="btn ghost" id="gSkip">Skip this one</button><button class="btn" id="gStop">Stop asking</button></div>');
+    $("modal").querySelectorAll("[data-g]").forEach(function(el){el.onclick=function(){p.g=el.dataset.g;save();next();};});
+    $("gSkip").onclick=next;
+    $("gStop").onclick=function(){closeModal();renderSide();renderMain();};
+  }
+  step();
+}
 /* load, with migration from earlier versions */
 try{
   var raw=localStorage.getItem(KEY),o2=localStorage.getItem("classBracket.v2"),o1=localStorage.getItem("classBracket.v1");
@@ -132,6 +185,8 @@ try{
   }
 }catch(e){}
 while(S.slots.length<16)S.slots.push("");
+if(!S.pick.gender)S.pick.gender="any";
+S.people.forEach(function(p){if(p.g===undefined)p.g=guess(p.name);});
 if(S.mode!==8&&S.mode!==16)S.mode=8;
 if(!S.rd||S.rd.length!==KK()||!S.rd[KK()-1]||S.rd[KK()-1].length!==2)initRd();
 
@@ -140,9 +195,9 @@ function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 function $(id){return document.getElementById(id);}
 function msg(t){$("msg").textContent=t||"";}
 function clsName(id){for(var i=0;i<S.classes.length;i++)if(S.classes[i].id===id)return S.classes[i].name;return "No class";}
-function pool(cls,role){return S.people.filter(function(p){
+function pool(cls,role,gen){return S.people.filter(function(p){
   var c=cls==="all"||(cls==="none"?p.cls==="":p.cls===cls);
-  return c&&(role==="any"||p.role===role);});}
+  return c&&(role==="any"||p.role===role)&&(!gen||gen==="any"||p.g===gen);});}
 function clsOptions(){
   var h='<option value="all">All classes</option>';
   S.classes.forEach(function(c){h+='<option value="'+c.id+'">'+esc(c.name)+'</option>';});
@@ -160,16 +215,26 @@ document.querySelectorAll(".tab").forEach(function(b){b.onclick=function(){
 
 /* toolbar */
 function initToolbar(){
-  $("tbMode").value=String(S.mode);
+  document.querySelectorAll("[data-m]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.m===S.mode));});
   $("tbCls").innerHTML=clsOptions();
   $("tbCls").value=S.pick.cls;if($("tbCls").value!==S.pick.cls)$("tbCls").value="all";
-  $("tbRole").value=S.pick.role;
+  $("tbRole").value=S.pick.role;$("tbGen").value=S.pick.gender;
+  updateSum();
 }
-$("tbMode").onchange=function(){S.mode=+this.value;initRd();save();msg("");renderBracket();};
-$("tbCls").onchange=function(){S.pick.cls=this.value;save();};
-$("tbRole").onchange=function(){S.pick.role=this.value;save();};
-function randomFrom(cls,role,exclude){
-  var pl=pool(cls,role).map(function(p){return p.name;});
+function updateSum(){
+  var c=S.pick.cls,r=S.pick.role,g=S.pick.gender;
+  var n=pool(c,r,g).length,left=g==="any"?0:pool(c,r,"any").filter(function(p){return p.g==="";}).length;
+  var where=c==="all"?"all classes":c==="none"?"people with no class":clsName(c);
+  var t="Picking "+roleLabel(r).toLowerCase()+(g==="m"?" (boys only)":g==="f"?" (girls only)":"")+" from "+where+": "+n+(n===1?" person matches.":" people match.");
+  if(left)t+=" "+left+(left===1?" person has":" people have")+" no gender set and "+(left===1?"is":"are")+" left out.";
+  $("sum").textContent=t;
+}
+document.querySelectorAll("[data-m]").forEach(function(b){b.onclick=function(){S.mode=+b.dataset.m;initRd();save();msg("");initToolbar();renderBracket();};});
+$("tbCls").onchange=function(){S.pick.cls=this.value;save();updateSum();};
+$("tbRole").onchange=function(){S.pick.role=this.value;save();updateSum();};
+$("tbGen").onchange=function(){S.pick.gender=this.value;save();updateSum();};
+function randomFrom(cls,role,gen,exclude){
+  var pl=pool(cls,role,gen).map(function(p){return p.name;});
   var fresh=pl.filter(function(n){return exclude.indexOf(n)<0;});
   var src=fresh.length?fresh:pl;
   return {name:src.length?src[Math.floor(Math.random()*src.length)]:"",repeat:pl.length>0&&!fresh.length};
@@ -178,7 +243,7 @@ $("fillAll").onclick=function(){
   var used=S.slots.slice(0,S.mode).filter(Boolean),rep=false,miss=false;
   for(var i=0;i<S.mode;i++){
     if(S.slots[i])continue;
-    var r=randomFrom(S.pick.cls,S.pick.role,used);
+    var r=randomFrom(S.pick.cls,S.pick.role,S.pick.gender,used);
     if(!r.name){miss=true;break;}
     if(r.repeat)rep=true;
     S.slots[i]=r.name;used.push(r.name);
@@ -227,7 +292,7 @@ function renderBracket(){
     el.onclick=function(){openBox(el.dataset.k,+el.dataset.i);};
     el.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();openBox(el.dataset.k,+el.dataset.i);}};
   });
-  fit();
+  fit();updateSum();
 }
 function fit(){
   var w=$("wrap").clientWidth,sc=Math.min(1,w/G.W);
@@ -267,27 +332,29 @@ function setWinner(k,i,n){
 function openSlot(i){
   var h='<h2>Slot '+(i+1)+' of '+S.mode+'</h2>'+
   '<div class="r"><input type="text" id="mName" list="dl" placeholder="Type a name" aria-label="Type a name" value="'+esc(S.slots[i])+'"><button class="btn" id="mUse">Use name</button></div>'+
-  '<div class="r"><select id="mCls" aria-label="Class">'+clsOptions()+'</select><select id="mRole" aria-label="Role"><option value="student">Students</option><option value="teacher">Teachers</option><option value="any">Everyone</option></select></div>'+
+  '<div class="fields"><div class="fld"><label for="mCls">Class</label><select id="mCls">'+clsOptions()+'</select></div>'+
+  '<div class="fld"><label for="mRole">Role</label><select id="mRole"><option value="student">Students</option><option value="teacher">Teachers</option><option value="any">Everyone</option></select></div>'+
+  '<div class="fld"><label for="mGen">Gender</label><select id="mGen"><option value="any">Boys and girls</option><option value="m">Boys only</option><option value="f">Girls only</option></select></div></div>'+
   '<div class="r"><button class="btn" id="mRand">Pick at random</button></div><p class="msg" id="mMsg"></p>'+
   '<div class="plist" id="mList"></div>'+
   '<div class="foot"><button class="btn ghost" id="mClear">Clear slot</button><button class="btn" id="mClose">Close</button></div>';
   showModal(h);
   $("mCls").value=S.pick.cls;if($("mCls").value!==S.pick.cls)$("mCls").value="all";
-  $("mRole").value=S.pick.role;
+  $("mRole").value=S.pick.role;$("mGen").value=S.pick.gender;
   function others(){return S.slots.slice(0,S.mode).filter(function(s,j){return j!==i&&s;});}
   function put(n){S.slots[i]=n;initRd();save();renderBracket();closeModal();}
   function list(){
-    S.pick.cls=$("mCls").value;S.pick.role=$("mRole").value;save();
-    var pl=pool(S.pick.cls,S.pick.role),used=others();
+    S.pick.cls=$("mCls").value;S.pick.role=$("mRole").value;S.pick.gender=$("mGen").value;save();
+    var pl=pool(S.pick.cls,S.pick.role,S.pick.gender),used=others();
     $("mList").innerHTML=pl.length?pl.map(function(q){
       return '<button class="chip" data-n="'+esc(q.name)+'"'+(used.indexOf(q.name)>=0?' disabled title="Already in a slot"':"")+'>'+esc(q.name)+'</button>';}).join(""):'<span class="msg">No '+roleLabel(S.pick.role).toLowerCase()+' here yet. Add some on the People tab.</span>';
     $("mList").querySelectorAll("[data-n]").forEach(function(el){el.onclick=function(){put(el.dataset.n);};});
   }
-  $("mCls").onchange=list;$("mRole").onchange=list;list();
+  $("mCls").onchange=list;$("mRole").onchange=list;$("mGen").onchange=list;list();
   $("mUse").onclick=function(){var v=$("mName").value.trim();if(v)put(v);};
   $("mName").onkeydown=function(e){if(e.key==="Enter")$("mUse").click();};
   $("mRand").onclick=function(){
-    var r=randomFrom($("mCls").value,$("mRole").value,others());
+    var r=randomFrom($("mCls").value,$("mRole").value,$("mGen").value,others());
     if(!r.name){$("mMsg").textContent="Nobody to pick from. Add people on the People tab.";return;}
     put(r.name);
   };
@@ -317,21 +384,25 @@ function renderSide(){
   $("addCls").onclick=function(){var v=$("newCls").value.trim();if(!v)return;var id=uid();S.classes.push({id:id,name:v});V=id;save();renderSide();renderMain();};
   $("newCls").onkeydown=function(e){if(e.key==="Enter")$("addCls").click();};
 }
+function genSel(v,attr){return '<select '+attr+' aria-label="Gender"><option value=""'+(!v?" selected":"")+'>Not set</option><option value="m"'+(v==="m"?" selected":"")+'>Boy</option><option value="f"'+(v==="f"?" selected":"")+'>Girl</option></select>';}
 function roleSel(v,attr){return '<select '+attr+' aria-label="Role"><option value="student"'+(v==="student"?" selected":"")+'>Student</option><option value="teacher"'+(v==="teacher"?" selected":"")+'>Teacher</option></select>';}
 function clsSel(v,attr){var h='<select '+attr+' aria-label="Class"><option value="">No class</option>';S.classes.forEach(function(c){h+='<option value="'+c.id+'"'+(v===c.id?" selected":"")+'>'+esc(c.name)+'</option>';});return h+'</select>';}
 function renderMain(){
   var isCls=S.classes.some(function(c){return c.id===V;});
   var defRole=V==="teachers"?"teacher":"student",defCls=isCls?V:"";
-  var h='<div class="panel">';
+  var need=S.people.filter(function(p){return p.g==="";});
+  var h=need.length?'<div class="banner"><span><strong>'+need.length+(need.length===1?" person needs":" people need")+' a gender.</strong> Boys-only and girls-only picks skip them until it is set.</span><button class="btn" id="needBtn">Set now</button></div>':"";
+  h+='<div class="panel">';
   if(isCls)h+='<div class="hd"><input type="text" id="clsName" value="'+esc(clsName(V))+'" aria-label="Class name"><button class="btn ghost sm" id="delCls">Delete class</button></div>';
   else h+='<div class="hd"><strong>'+(V==="all"?"Everyone":V==="teachers"?"Teachers":"No class")+'</strong></div>';
-  h+='<div class="toolbar"><input type="text" id="aName" placeholder="Full name" aria-label="Full name">'+roleSel(defRole,'id="aRole"')+clsSel(defCls,'id="aCls"')+'<button class="btn" id="aBtn">Add person</button></div>'+
+  h+='<div class="toolbar"><input type="text" id="aName" placeholder="Full name" aria-label="Full name">'+roleSel(defRole,'id="aRole"')+clsSel(defCls,'id="aCls"')+'<select id="aGen" aria-label="Gender"><option value="auto">Gender: auto-detect</option><option value="m">Boy</option><option value="f">Girl</option></select><button class="btn" id="aBtn">Add person</button></div>'+
   '<p class="msg" id="pMsg" role="status"></p></div>'+
   '<div class="panel"><div class="toolbar" style="margin-bottom:8px"><input type="text" id="search" placeholder="Search names" aria-label="Search names"><span class="msg" id="cnt" style="margin:0"></span></div>'+
-  '<table class="tbl"><thead><tr><th>Name</th><th>Role</th><th>Class</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>'+
+  '<table class="tbl"><thead><tr><th>Name</th><th>Role</th><th>Class</th><th>Gender</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>'+
   '<div class="panel"><details><summary>Paste a list</summary><p class="msg">One name per line. Everyone is added with the role and class you choose here.</p>'+
   '<textarea id="bulk" rows="6" style="width:100%" aria-label="Names to import"></textarea><div class="toolbar" style="margin-top:8px">'+roleSel(defRole,'id="bRole"')+clsSel(defCls,'id="bCls"')+'<button class="btn" id="bBtn">Import names</button></div></details></div>';
   $("pmain").innerHTML=h;
+  if($("needBtn"))$("needBtn").onclick=function(){askGender(need);};
   $("search").value=Q;
   $("search").oninput=function(){Q=this.value;renderRows();};
   if(isCls){
@@ -346,29 +417,32 @@ function renderMain(){
     var nm=$("aName").value.trim();if(!nm)return;
     var role=$("aRole").value,cls=$("aCls").value;
     if(S.people.some(function(p){return p.name.toLowerCase()===nm.toLowerCase()&&p.cls===cls&&p.role===role;})){$("pMsg").textContent=nm+" is already in that list.";return;}
-    S.people.push({id:uid(),name:nm,role:role,cls:cls});save();$("aName").value="";$("pMsg").textContent="Added "+nm+".";renderSide();renderRows();$("aName").focus();
+    var gv=$("aGen").value,g=gv==="auto"?guess(nm):gv,np={id:uid(),name:nm,role:role,cls:cls,g:g};
+    S.people.push(np);save();$("aName").value="";renderSide();renderRows();
+    if(g==="")askGender([np]);else{$("pMsg").textContent="Added "+nm+" ("+(g==="m"?"boy":"girl")+").";$("aName").focus();}
   }
   $("aBtn").onclick=add;$("aName").onkeydown=function(e){if(e.key==="Enter")add();};
   $("bBtn").onclick=function(){
-    var role=$("bRole").value,cls=$("bCls").value,c=0;
+    var role=$("bRole").value,cls=$("bCls").value,c=0,fresh=[];
     $("bulk").value.split("\n").forEach(function(l){
       l=l.trim();if(!l)return;
       if(S.people.some(function(p){return p.name.toLowerCase()===l.toLowerCase()&&p.cls===cls&&p.role===role;}))return;
-      S.people.push({id:uid(),name:l,role:role,cls:cls});c++;});
-    $("bulk").value="";save();$("pMsg").textContent="Imported "+c+" "+(c===1?"person":"people")+".";renderSide();renderRows();};
+      var nq={id:uid(),name:l,role:role,cls:cls,g:guess(l)};S.people.push(nq);fresh.push(nq);c++;});
+    $("bulk").value="";save();$("pMsg").textContent="Imported "+c+" "+(c===1?"person":"people")+".";renderSide();renderRows();askGender(fresh);};
   renderRows();
 }
 function renderRows(){
   var list=viewPeople();
   $("cnt").textContent=list.length+(list.length===1?" person":" people");
   $("rows").innerHTML=list.length?list.map(function(p){
-    return '<tr data-id="'+p.id+'"><td><input type="text" data-f="name" value="'+esc(p.name)+'" aria-label="Name"></td><td>'+roleSel(p.role,'data-f="role"')+'</td><td>'+clsSel(p.cls,'data-f="cls"')+'</td><td><button class="btn ghost sm" data-d="1" aria-label="Remove '+esc(p.name)+'">Remove</button></td></tr>';
-  }).join(""):'<tr><td colspan="4" class="msg">Nobody here yet. Add a person above.</td></tr>';
+    return '<tr class="'+(p.g===""?"need":"")+'" data-id="'+p.id+'"><td><input type="text" data-f="name" value="'+esc(p.name)+'" aria-label="Name"></td><td>'+roleSel(p.role,'data-f="role"')+'</td><td>'+clsSel(p.cls,'data-f="cls"')+'</td><td>'+genSel(p.g,'data-f="gen"')+'</td><td><button class="btn ghost sm" data-d="1" aria-label="Remove '+esc(p.name)+'">Remove</button></td></tr>';
+  }).join(""):'<tr><td colspan="5" class="msg">Nobody here yet. Add a person above.</td></tr>';
   $("rows").querySelectorAll("tr[data-id]").forEach(function(tr){
     var p=S.people.filter(function(x){return x.id===tr.dataset.id;})[0];
     tr.querySelector('[data-f="name"]').oninput=function(){p.name=this.value;save();};
     tr.querySelector('[data-f="role"]').onchange=function(){p.role=this.value;save();renderSide();renderRows();};
     tr.querySelector('[data-f="cls"]').onchange=function(){p.cls=this.value;save();renderSide();renderRows();};
+    tr.querySelector('[data-f="gen"]').onchange=function(){p.g=this.value;save();renderSide();renderMain();};
     tr.querySelector("[data-d]").onclick=function(){S.people=S.people.filter(function(x){return x!==p;});save();renderSide();renderRows();};
   });
   refreshDl();
